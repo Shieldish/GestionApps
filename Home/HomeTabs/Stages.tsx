@@ -192,12 +192,12 @@ const Stages = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ccc',
     padding: 10,
   },
   searchInput: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: 'white',
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,

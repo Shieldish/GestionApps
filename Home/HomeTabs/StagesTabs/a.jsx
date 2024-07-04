@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, ScrollView, StyleSheet, Alert, TouchableOpacity, Platform, SafeAreaView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { RadioButton, Checkbox } from 'react-native-paper';
 import * as DocumentPicker from 'expo-document-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialIcons } from '@expo/vector-icons';
+import axios from 'axios';
 
 const ApplicationForm = ({ route, navigation }) => {
   const { stage } = route.params;
+ 
 
   const [formData, setFormData] = useState({
     nom: '',
@@ -37,6 +39,267 @@ const ApplicationForm = ({ route, navigation }) => {
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [errors, setErrors] = useState({});
+  const [emailInUse, setEmailInUse] = useState(false); 
+  const [submitting, setSubmitting] = useState(false);
+
+
+  const checkEmailInUse = async (email) => {
+    if (!email) return;
+  
+    try {
+      const stageId =stage  // stage.id; // Assuming you have stage.id available from route.params
+      const url =`${process.env.BACKEND_URL}/etudiant/check-email?email=${email}&stageId=${stageId}`;
+    
+  
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+  
+      if (data.exists) {
+        setEmailInUse(true);
+        setErrors((prevErrors) => ({ ...prevErrors, email: ' this email is already used to apply for this stage.' }));
+      } else {
+        setEmailInUse(false);
+        setErrors((prevErrors) => ({ ...prevErrors, email: null }));
+      }
+    } catch (error) {
+      console.error('Error checking email:', error);
+      setErrors((prevErrors) => ({ ...prevErrors, email: 'Erreur lors de la vérification de l\'email.' }));
+    }
+  };
+  
+
+
+  const handleEmailBlur = () => {
+    checkEmailInUse(formData.email);
+  };
+
+   const handleSubmit = async () => {
+
+    setSubmitting(true);
+    // Check if terms are accepted
+    if (!formData.termsAccepted) {
+      Alert.alert('Erreur', 'Vous devez accepter les termes avant de soumettre.');
+      setSubmitting(false);
+      return;
+    }
+  
+    // Validate the form data
+    if (!validateForm()) {
+      Alert.alert('Erreur', 'Veuillez remplir tous les champs obligatoires.');
+      setSubmitting(false);
+      return;
+    }
+  
+    // Validate that all required files are selected
+    if (!formData.cv) {
+      Alert.alert('Erreur', 'Vous devez télécharger le fichier requis (CV).');
+      setSubmitting(false);
+      return;
+    }
+
+    try {
+      await checkEmailInUse(formData.email);
+      
+      // After checkEmailInUse completes, check the errors state
+      const emailError = errors.email;
+      if (emailError) {
+        Alert.alert('Erreur', emailError);
+        setSubmitting(false);
+        return;
+      }
+    } catch (error) {
+      console.error('Error checking email:', error);
+      Alert.alert('Erreur', 'Une erreur est survenue lors de la vérification de l\'email.');
+      setSubmitting(false);
+      return;
+    }
+  
+    // Construct the form data for the API call
+    const formDataToSend = new FormData();
+    formDataToSend.append('nom', formData.nom);
+    formDataToSend.append('prenom', formData.prenom);
+    formDataToSend.append('date_naissance', formData.date_naissance);
+    formDataToSend.append('adresse', formData.adresse);
+    formDataToSend.append('telephone', formData.telephone);
+    formDataToSend.append('email', formData.email);
+    formDataToSend.append('niveau_etudes', formData.niveau_etudes);
+    formDataToSend.append('institution', formData.institution);
+    formDataToSend.append('domaine_etudes', formData.domaine_etudes);
+    formDataToSend.append('section', formData.section);
+    formDataToSend.append('annee_obtention', formData.annee_obtention);
+    formDataToSend.append('experience', formData.experience);
+    formDataToSend.append('experience_description', formData.experience_description);
+    formDataToSend.append('motivation', formData.motivation);
+    formDataToSend.append('langues', formData.langues);
+    formDataToSend.append('logiciels', formData.logiciels);
+    formDataToSend.append('competences_autres', formData.competences_autres);
+    formDataToSend.append('date_debut', formData.date_debut);
+    formDataToSend.append('duree_stage', formData.duree_stage);
+  
+    if (formData.cv) {
+      formDataToSend.append('cv', {
+        uri: formData.cv.uri,
+        name: formData.cv.name,
+        type: formData.cv.type,
+      });
+    }
+    if (formData.lettre_motivation) {
+      formDataToSend.append('lettre_motivation', {
+        uri: formData.lettre_motivation.uri,
+        name: formData.lettre_motivation.name,
+        type: formData.lettre_motivation.type,
+      });
+    }
+    if (formData.releves_notes) {
+      formDataToSend.append('releves_notes', {
+        uri: formData.releves_notes.uri,
+        name: formData.releves_notes.name,
+        type: formData.releves_notes.type,
+      });
+    }
+  
+    // Debugging information
+    console.log('Form Data to Send:', formDataToSend);
+    // Prepare the API call
+    try {
+      const id = stage;
+      console.log('Backend URL:', process.env.BACKEND_URL);
+  
+      const response = await axios.post(`${process.env.BACKEND_URL}/etudiant/postulates/${id}`, formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+
+      console.log('Form submitted successfully:', response.data);
+      Alert.alert('Formulaire soumis', 'Votre candidature a été soumise avec succès.', [
+        { text: 'OK', onPress: () => navigateToAnotherComponent() }
+      ]);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      let errorMessage = 'Une erreur est survenue lors de la soumission du formulaire.';
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        errorMessage += ` Statut: ${error.response.status}. ${error.response.data.message || ''}`;
+      } else if (error.request) {
+        // The request was made but no response was received
+        errorMessage += ' La requête a été faite mais aucune réponse n\'a été reçue.';
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        errorMessage += ` Détails: ${error.message}`;
+      }
+      Alert.alert('Erreur', errorMessage);
+    }
+  };
+ 
+
+
+ /*  const handleSubmit = async () => {
+    // Check if terms are accepted
+    if (!formData.termsAccepted) {
+      Alert.alert('Erreur', 'Vous devez accepter les termes avant de soumettre.');
+      return;
+    }
+  
+    // Validate the form data
+    if (!validateForm()) {
+      Alert.alert('Erreur', 'Veuillez remplir tous les champs obligatoires.');
+      return;
+    }
+  
+    // Validate that all required files are selected
+    if (!formData.cv ) {  //|| !formData.lettre_motivation || !formData.releves_notes
+      Alert.alert('Erreur', 'Vous devez télécharger les fichiers requis.');
+      return;
+    }
+  
+    // Construct the form data for the API call
+    const formDataToSend = new FormData();
+    formDataToSend.append('nom', formData.nom);
+    formDataToSend.append('prenom', formData.prenom);
+    formDataToSend.append('date_naissance', formData.date_naissance);
+    formDataToSend.append('adresse', formData.adresse);
+    formDataToSend.append('telephone', formData.telephone);
+    formDataToSend.append('email', formData.email);
+    formDataToSend.append('niveau_etudes', formData.niveau_etudes);
+    formDataToSend.append('institution', formData.institution);
+    formDataToSend.append('domaine_etudes', formData.domaine_etudes);
+    formDataToSend.append('section', formData.section);
+    formDataToSend.append('annee_obtention', formData.annee_obtention);
+    formDataToSend.append('experience', formData.experience);
+    formDataToSend.append('experience_description', formData.experience_description);
+    formDataToSend.append('motivation', formData.motivation);
+    formDataToSend.append('langues', formData.langues);
+    formDataToSend.append('logiciels', formData.logiciels);
+    formDataToSend.append('competences_autres', formData.competences_autres);
+    formDataToSend.append('date_debut', formData.date_debut);
+    formDataToSend.append('duree_stage', formData.duree_stage);
+  
+    // Add the files to the form data
+    if (formData.cv) {
+      formDataToSend.append('cv', {
+        uri: formData.cv.uri,
+        name: formData.cv.name,
+        type: formData.cv.type,
+      });
+    }
+    if (formData.lettre_motivation) {
+      formDataToSend.append('lettre_motivation', {
+        uri: formData.lettre_motivation.uri,
+        name: formData.lettre_motivation.name,
+        type: formData.lettre_motivation.type,
+      });
+    }
+    if (formData.releves_notes) {
+      formDataToSend.append('releves_notes', {
+        uri: formData.releves_notes.uri,
+        name: formData.releves_notes.name,
+        type: formData.releves_notes.type,
+      });
+    }
+  
+    // Debugging information
+    console.log('Form Data to Send:', formDataToSend);
+  
+    // Prepare the API call
+    try {
+      const id = stage.id; // Ensure this is the correct ID
+      const response = await fetch(`${process.env.BACKEND_URL}/etudiant/postulate/${id}`, {
+        method: 'POST',
+        body: formDataToSend,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log('Form submitted successfully:', responseData);
+        Alert.alert('Formulaire soumis', 'Votre candidature a été soumise avec succès.');
+      } else {
+        const errorData = await response.json();
+        console.error('Error submitting form:', errorData);
+        Alert.alert('Erreur', `Erreur lors de la soumission du formulaire: ${errorData.error}`);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      Alert.alert('Erreur', 'Une erreur est survenue lors de la soumission du formulaire.');
+    }
+  };
+   */
+
 
   const handleDateInputChange = (field, value) => {
     const datePattern = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/\d{4}$/;
@@ -69,18 +332,31 @@ const ApplicationForm = ({ route, navigation }) => {
     }
   };
 
+  useEffect(() => {
+    console.log('Updated formData:', formData);
+  }, [formData]);
+  
   const handleFilePicker = async (fileType) => {
     try {
       const res = await DocumentPicker.getDocumentAsync({
         type: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
         copyToCacheDirectory: false,
-        allowMultiSelection: true,
+        allowMultiSelection: false,
       });
-      const files = res.assets[0];
-
-      if (files) {
-        setFormData({ ...formData, [fileType]: { name: files.name, uri: files.uri } });
+      const file = res.assets[0];
+      console.log(fileType, file);
+      if (file) {
+        setFormData(prevState => ({
+          ...prevState,
+          [fileType]: {
+            name: file.name,
+            uri: file.uri,
+            type: file.mimeType // Add this line to include the file type
+          }
+        }));
+        
       }
+      
     } catch (err) {
       console.log('Error picking document:', err);
     }
@@ -155,7 +431,7 @@ const ApplicationForm = ({ route, navigation }) => {
     return isValid;
   };
 
-  const handleSubmit = () => {
+/*   const handleSubmit = () => {
     if (!formData.termsAccepted) {
       Alert.alert('Erreur', 'Vous devez accepter les termes avant de soumettre.');
       return;
@@ -168,10 +444,13 @@ const ApplicationForm = ({ route, navigation }) => {
 
     console.log(formData);
     Alert.alert('Formulaire soumis', 'Votre candidature a été soumise avec succès.');
-  };
+  }; */
+
+  
+  
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 , paddingBottom:30 }}>
       <ScrollView style={styles.container}>
         {/* Your form sections and inputs */}
         <View style={styles.formSection}>
@@ -233,8 +512,9 @@ const ApplicationForm = ({ route, navigation }) => {
             value={formData.email}
             onChangeText={(value) => handleInputChange('email', value)}
             keyboardType="email-address"
+            onBlur={handleEmailBlur}
           />
-          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>} 
         </View>
 
     
@@ -396,7 +676,9 @@ const ApplicationForm = ({ route, navigation }) => {
               onPress={() => setFormData({ ...formData, termsAccepted: !formData.termsAccepted })}
             />
             <Text style={styles.checkboxLabel}>
-              J'accepte les termes et conditions
+              J'accepte les termes et conditions,
+              En soumettant ce formulaire, j'atteste que les informations fournies sont exactes et complètes
+              NB : Après soumission il n'est plus possible de modifier !
             </Text>
           </View>
         </View>
@@ -412,8 +694,8 @@ const ApplicationForm = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    paddingBottom: 80, // Ensures space at the bottom
+    padding: 20,
+   
     backgroundColor: '#fff',
   },
   formSection: {
@@ -432,6 +714,17 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 8,
     backgroundColor: '#f9f9f9',
+  },
+  textArea: {
+    height: 100,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 16,
+    backgroundColor: '#fff',
+    textAlignVertical: 'top',  // This ensures text starts from the top in Android
+    marginBottom: 10,
   },
   inputContainer: {
     flexDirection: 'row',

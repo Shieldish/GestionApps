@@ -10,6 +10,8 @@ import RegistrationSuccessMessages from './connection/RegistrationSuccessMessage
 import HomePage from './Home/HomePage';
 import Postulation from './Home/HomeTabs/StagesTabs/Postulation'; // Correct import for Postulation
 import ApplicationForm  from './Home/HomeTabs/StagesTabs/ApplicationForm';
+import StagesPostuler from './Home/HomeTabs/StagesPostuler'
+import MoreDetails from './Home/HomeTabs/StagesTabs/MoreDetails'
 
 const Stack = createStackNavigator();
 
@@ -23,7 +25,9 @@ function App() {
         <Stack.Screen name="RegistrationSuccessMessages" component={RegistrationSuccessMessages} options={{ headerShown: false }} />
         <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }} />
         <Stack.Screen name="Postulation" component={Postulation} options={{ headerShown: true, title: 'Postulation' }} />
-      <Stack.Screen name="ApplicationForm" component={ApplicationForm} options={{ title: 'Formulaire de Candidature' }} />
+        <Stack.Screen name="ApplicationForm" component={ApplicationForm} options={{ title: 'Formulaire de Candidature' }} />
+        <Stack.Screen name="StagesPostuler" component={StagesPostuler} />
+        <Stack.Screen name="MoreDetails" component={MoreDetails} options={{ title: 'Candidature'}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

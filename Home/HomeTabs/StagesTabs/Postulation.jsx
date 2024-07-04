@@ -19,7 +19,7 @@ const Postulation = ({ route }) => {
   }, []);
 
   const handlePostuler = () => {
-    navigation.navigate('ApplicationForm', { stageId: stage.id });
+    navigation.navigate('ApplicationForm', { stage: stage.id });
   };
 
   return (

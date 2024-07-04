@@ -48,7 +48,7 @@ const MoreDetails = ({ route }) => {
                 <View style={[styles.statusContainer,
                     stageData.status === 'accepté' ? styles.statusAccepted :
                     stageData.status === 'refusé' ? styles.statusRejected : null]}>
-                    <Text style={styles.statusContainerContents}>{stageData.status}</Text>
+                    <Text style={styles.statusContainerContents}>   CANDIDATURE {stageData.status}</Text>
                 </View>
             )}
                 <Text style={styles.heading}>Candidature : {stageData.stageDomaine} / {stageData.stageSujet} / {stageData.entrepriseName}</Text>
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         color: '#007bff',
-        paddingTop: 20,
+        paddingTop: 10,
         fontSize: 18,
         marginBottom: 10
     },

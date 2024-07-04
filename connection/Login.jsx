@@ -1,7 +1,9 @@
+//Login.jsx
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BACKEND_URL } from '@env';
 
 const Login = () => {
@@ -44,12 +46,15 @@ const Login = () => {
       if (response.ok) {
         // Handle successful login
         console.log('Login successful:', data);
+        await AsyncStorage.setItem('userToken', data.token);
+        await AsyncStorage.setItem('userData', JSON.stringify(data.userData));
 
         // Navigate to next screen or handle success
-        navigation.navigate('HomePage', { userId: data.userId });
+      /*   navigation.navigate('HomePage', { userId: data.userId }); */
+      navigation.replace('HomePage');
       } else {
         // Handle login failure
-        setErrorMessage(data.message);
+        setErrorMessage(data.message || 'Login failed');
       }
 
     } catch (error) {

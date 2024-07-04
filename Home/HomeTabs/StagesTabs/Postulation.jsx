@@ -1,21 +1,32 @@
 import 'react-native-gesture-handler';
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
+
+const { width } = Dimensions.get('window');
 
 const Postulation = ({ route }) => {
   const { stage } = route.params;
   const navigation = useNavigation();
   const fadeAnim = new Animated.Value(0);
+  const slideAnim = new Animated.Value(width);
 
   useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        tension: 20,
+        friction: 7,
+        useNativeDriver: true,
+      }),
+    ]).start();
   }, []);
 
   const handlePostuler = () => {
@@ -24,14 +35,13 @@ const Postulation = ({ route }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Animated.View style={{ ...styles.content, opacity: fadeAnim }}>
+      <Animated.View style={{ opacity: fadeAnim, transform: [{ translateX: slideAnim }] }}>
         <LinearGradient
           colors={['#4c669f', '#3b5998', '#192f6a']}
           style={styles.header}
         >
-          <Text style={styles.title}>Stages Details</Text>
+          <Text style={styles.title}>Stage Details</Text>
         </LinearGradient>
-
         <View style={styles.detailsContainer}>
           <DetailItem icon="briefcase" label="StageID" value={stage.id} />
           <DetailItem icon="building" label="Sociéte/Entreprise" value={stage.Nom} />
@@ -50,7 +60,6 @@ const Postulation = ({ route }) => {
             value={`${new Date(stage.DateDebut).toLocaleDateString()} - ${new Date(stage.DateFin).toLocaleDateString()}`} 
           />
         </View>
-
         <TouchableOpacity style={styles.postulerButton} onPress={handlePostuler}>
           <LinearGradient
             colors={['#4c669f', '#3b5998', '#192f6a']}
@@ -101,13 +110,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
-  content: {
-    padding: 20,
-  },
   header: {
     padding: 20,
-    borderRadius: 10,
-    marginBottom: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
   },
   title: {
     fontSize: 24,
@@ -116,32 +122,40 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   detailsContainer: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 20,
-    elevation: 3,
+    padding: 20,
   },
   detailItem: {
     flexDirection: 'row',
+    alignItems: 'flex-start',
     marginBottom: 15,
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
   icon: {
-    marginRight: 10,
-    width: 30,
+    marginRight: 15,
+    marginTop: 3,
   },
   textContainer: {
     flex: 1,
   },
   label: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 2,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 5,
   },
   value: {
-    fontSize: 16,
-    fontWeight:'bold',
-    color: '#333',
+    fontSize: 14,
+    color: '#666',
   },
   expandButton: {
     color: '#3b5998',
@@ -149,15 +163,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   postulerButton: {
-    borderRadius: 25,
+    margin: 20,
+    borderRadius: 4,
     overflow: 'hidden',
-    marginTop: 20,
+    backgroundColor: '#192f6a',
+   
   },
   gradient: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 15,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
   },
   postulerButtonText: {
     color: 'white',

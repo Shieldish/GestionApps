@@ -1,19 +1,27 @@
 // Home.jsx
 
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Button } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { logout } from '../../authService'; 
 const Home = () => {
   const navigation = useNavigation();
+
+  const handleLogout = () => {
+    logout(navigation);
+  };
+
+
+   
 
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to the Home Page</Text>
-    
-      
-      
+      <Text style={styles.title}>Welcome to Home Page</Text>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutButtonText}>Logout</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -23,31 +31,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#007bff',
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
     marginBottom: 20,
   },
-  button: {
+  logoutButton: {
     backgroundColor: '#007bff',
-    paddingVertical: 15,
+    padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 20,
   },
-  buttonText: {
+  logoutButtonText: {
     color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
+
+
 
 export default Home;

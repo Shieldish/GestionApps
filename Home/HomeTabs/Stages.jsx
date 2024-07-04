@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator, Alert,Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const Stages = () => {
   const [stages, setStages] = useState([]);
@@ -35,40 +37,63 @@ const Stages = () => {
   const fetchStages = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${process.env.BACKEND_URL}/etudiant/All?${new URLSearchParams({
-        search: search.trim(),
-        page: pagination.currentPage.toString(),
-        limit: '10',
-        ...filters,
-      })}`);
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+
+      // Get the JWT token from AsyncStorage
+      const token = await AsyncStorage.getItem('userToken');
+
+      if (!token) {
+        throw new Error('No authentication token found');
       }
-  
-      const data = await response.json();
-      setStages(data.stages);
-      setPagination({
-        currentPage: data.pagination.currentPage,
-        totalPages: data.pagination.totalPages,
-        totalItems: data.pagination.totalItems,
+
+      // Make the request using Axios
+      const response = await axios.get(`${process.env.BACKEND_URL}/etudiant/All`, {
+        headers: {
+          'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+        },
+        params: {
+          search: search.trim(),
+          page: pagination.currentPage.toString(),
+          limit: '10',
+          ...filters,
+        }
       });
-  
-      setSearchError(data.stages.length === 0);
+
+      // Handle the response
+      setStages(response.data.stages);
+      setPagination({
+        currentPage: response.data.pagination.currentPage,
+        totalPages: response.data.pagination.totalPages,
+        totalItems: response.data.pagination.totalItems,
+      });
+
+      setSearchError(response.data.stages.length === 0);
     } catch (error) {
       console.error('Error fetching stages:', error);
-  
-      // Customize alert message with the error details
+
+      let errorMessage = 'An error occurred while fetching the stages.';
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        if (error.response.status === 401) {
+          errorMessage = 'Authentication failed. Please log in again.';
+        } else {
+          errorMessage = `HTTP error! status: ${error.response.status}`;
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        errorMessage = 'No response from the server. Please check your internet connection.';
+      }
+
       Alert.alert(
         'Error Fetching Data',
-        `There was an issue fetching the stages: ${error.message}`,
+        errorMessage,
         [
           {
             text: 'Cancel',
             onPress: () => console.log('Cancel Pressed'),
             style: 'cancel',
           },
-          { text: 'Retry', onPress: () => fetchStages() },  // Retry action to call fetchStages again
+          { text: 'Retry', onPress: () => fetchStages() },
           { text: 'OK', onPress: () => console.log('OK Pressed') },
         ]
       );
@@ -78,6 +103,7 @@ const Stages = () => {
     }
   };
 
+  
   const handleRefresh = () => {
     setRefreshing(true);
     setPagination(prev => ({ ...prev, currentPage: 1 }));
@@ -134,6 +160,8 @@ const Stages = () => {
     </View>
   );
 
+
+
   const renderEmptySearch = () => (
     <View style={styles.emptySearchContainer}>
       <Text style={styles.emptySearchText}>{`"${search}" not found`}</Text>
@@ -167,7 +195,10 @@ const Stages = () => {
           />
         )
       )}
+  
 
+
+          
       <View style={styles.paginationContainer}>
         <TouchableOpacity 
           style={styles.paginationButton} 
@@ -185,6 +216,7 @@ const Stages = () => {
           <Text style={styles.paginationButtonText}>{'>>'}</Text>
         </TouchableOpacity>
       </View>
+     
     </View>
   );
 };

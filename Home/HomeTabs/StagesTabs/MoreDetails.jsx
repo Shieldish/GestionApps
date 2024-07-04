@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Linking } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Animated,Linking } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MoreDetails = ({ route }) => {
     const { stageId, etudiantEmail } = route.params;
@@ -8,29 +9,55 @@ const MoreDetails = ({ route }) => {
     const [stageData, setStageData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [fadeAnim] = useState(new Animated.Value(0));
+  
+    const getStatusStyle = (status) => {
+        switch (status) {
+            case 'accepté':
+                return styles.statusAccepted;
+            case 'refusé':
+                return styles.statusRejected;
+            default:
+                return styles.statusPending;
+        }
+    };
+    
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await axios.get(`${process.env.BACKEND_URL}/etudiant/candidatures2`, {
-                    params: {
-                        etudiantEmail,
-                        stageId
-                    }
-                });
-                const { candidature, stage } = response.data;
-
-                setCandidature(candidature);
-                setStageData(stage);
-                setLoading(false); // Set loading to false once data is fetched
-            } catch (error) {
-                setError(error.message);
-                setLoading(false); // Set loading to false on error
-            }
+          try {
+            const token = await AsyncStorage.getItem('userToken');
+      
+            const response = await axios.get(`${process.env.BACKEND_URL}/etudiant/candidatures2`, {
+              params: {
+                etudiantEmail, // Assuming etudiantEmail is defined or passed correctly
+                stageId, // Assuming stageId is defined or passed correctly
+              },
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`
+              }
+            });
+      
+            const { candidature, stage } = response.data;
+      
+            setCandidature(candidature);
+            setStageData(stage);
+            setLoading(false); 
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 1000,
+                useNativeDriver: true,
+            }).start();// Set loading to false once data is fetched
+          } catch (error) {
+            setError(error.message);
+            setLoading(false); // Set loading to false on error
+          }
         };
-
+      
         fetchData();
-    }, [etudiantEmail, stageId]);
+      }, [etudiantEmail, stageId]);
+      
 
     if (loading) {
         return <View style={styles.container}><Text>Loading...</Text></View>;
@@ -44,15 +71,22 @@ const MoreDetails = ({ route }) => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.cardContainer}>
 
-            {stageData.status && (
+         {/*    {stageData.status && (
                 <View style={[styles.statusContainer,
                     stageData.status === 'accepté' ? styles.statusAccepted :
                     stageData.status === 'refusé' ? styles.statusRejected : null]}>
                     <Text style={styles.statusContainerContents}>   CANDIDATURE {stageData.status}</Text>
                 </View>
-            )}
+            )} */}
                 <Text style={styles.heading}>Candidature : {stageData.stageDomaine} / {stageData.stageSujet} / {stageData.entrepriseName}</Text>
                 
+                <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+            <View style={[styles.statusContainer, getStatusStyle(stageData.status)]}>
+                <Text style={styles.statusText}>CANDIDATURE {stageData.status.toUpperCase()}</Text>
+            </View>
+            </Animated.View>
+
+
                 {candidature &&
                     <View style={styles.card}>
                         <Text style={styles.title}>{candidature.nom} {candidature.prenom}</Text>
@@ -202,28 +236,32 @@ const styles = StyleSheet.create({
         color: 'blue',
         textDecorationLine: 'underline'
     },
+
     statusContainer: {
         alignSelf: 'center',
         marginBottom: 10,
-        paddingVertical: 5,
-        paddingHorizontal: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center',
-        // Default style for 'a attente'
-        backgroundColor: '#ffc107', // yellow
-    },
-    statusContainerContents: {
-        color: '#fff',
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
-        fontSize: 16,
-    },
+        backgroundColor: '#ffc107', 
+    }, 
+
     statusAccepted: {
         backgroundColor: '#28a745', // green
     },
     statusRejected: {
         backgroundColor: '#dc3545', // red
+    },
+
+
+
+
+    statusText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
     },
 });
 

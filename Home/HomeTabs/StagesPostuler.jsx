@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   StyleSheet,
   View,
   Text,
-  ScrollView,
   TouchableOpacity,
-  Linking,
   RefreshControl,
   Animated,
+  FlatList,
 } from 'react-native';
 import axios from 'axios';
 import ContentLoader, { Rect } from 'react-content-loader/native';
@@ -20,7 +19,7 @@ const PostulantList = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
-  const navigation = useNavigation(); // Hook to get navigation
+  const navigation = useNavigation();
 
   const fetchPostulants = async () => {
     try {
@@ -45,85 +44,127 @@ const PostulantList = () => {
     fetchPostulants();
   };
 
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+
+  const renderLoader = () => (
+    <View style={styles.loaderContainer}>
+      <ContentLoader 
+        speed={1}
+        width={400}
+        height={150}
+        viewBox="0 0 400 150"
+        backgroundColor="#f3f3f3"
+        foregroundColor="#ecebeb"
+      >
+        <Rect x="0" y="10" rx="5" ry="5" width="360" height="10" />
+        <Rect x="0" y="30" rx="5" ry="5" width="320" height="10" />
+        <Rect x="0" y="50" rx="5" ry="5" width="280" height="10" />
+        <Rect x="0" y="80" rx="10" ry="10" width="400" height="60" />
+      </ContentLoader>
+    </View>
+  );
+
+  const renderItem = ({ item, index }) => {
+    const translateY = new Animated.Value(50);
+
+    Animated.timing(translateY, {
+      toValue: 0,
+      duration: 300,
+      delay: index * 100,
+      useNativeDriver: true,
+    }).start();
+
+    return (
+      <Animated.View 
+        style={[
+          styles.card,
+          { 
+            opacity: fadeAnim,
+            transform: [{ translateY }]
+          }
+        ]}
+      >
+        <View style={styles.cardBody}>
+          <Text style={styles.cardTitle}>
+            <Icon name="work" size={18} color="blue" /> {item.stageDomaine} : {item.entrepriseName}
+          </Text>
+          <Text>
+            <Text style={styles.bold}><Icon name="person" size={16} /> Nom et Prenom:</Text> {item.etudiantName}
+          </Text>
+          <Text>
+            <Text style={styles.bold}><Icon name="email" size={16} /> Email:</Text> {item.etudiantEmail}
+          </Text>
+          <Text>
+            <Text style={styles.bold}><Icon name="school" size={16} /> Institue:</Text> {item.etudiantInstitue}
+          </Text>
+          <Text>
+            <Text style={styles.bold}><Icon name="business-center" size={16} /> Domaine:</Text> {item.stageDomaine}
+          </Text>
+          <Text>
+            <Text style={styles.bold}><Icon name="category" size={16} /> Section:</Text> {item.etudiantSection}
+          </Text>
+          <Text>
+            <Text style={styles.bold}><Icon name="description" size={16} /> Sujet:</Text> {item.stageSujet}
+          </Text>
+          <Text style={{ color: getStatusColor(item.status), fontWeight: 'bold' }}>
+            <Text style={styles.bold}><Icon name="check-circle" size={16} /> Status:</Text> {item.status}
+          </Text>
+          <Text>
+            <Text style={styles.bold}><Icon name="calendar-today" size={16} /> Date de postulation:</Text> {item.postulatedAt}
+          </Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('MoreDetails', {
+              stageId: item.stageId,
+              etudiantEmail: item.etudiantEmail
+            })}
+          >
+            <Text><Icon name="info" size={16} /> View more Details</Text>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
+    );
+  };
+
   if (loading) {
     return (
-      <ScrollView contentContainerStyle={styles.loaderContainer}>
-        <ContentLoader 
-          speed={1}
-          width={400}
-          height={150}
-          viewBox="0 0 400 150"
-          backgroundColor="#f3f3f3"
-          foregroundColor="#ecebeb"
-        >
-          <Rect x="0" y="10" rx="5" ry="5" width="360" height="10" />
-          <Rect x="0" y="30" rx="5" ry="5" width="320" height="10" />
-          <Rect x="0" y="50" rx="5" ry="5" width="280" height="10" />
-          <Rect x="0" y="80" rx="10" ry="10" width="400" height="60" />
-        </ContentLoader>
-        {/* Repeat as necessary */}
-      </ScrollView>
+      <FlatList
+        data={[1, 2, 3, 4]} // Render 4 skeleton loaders
+        renderItem={renderLoader}
+        keyExtractor={(item, index) => `loader-${index}`}
+        contentContainerStyle={styles.container}
+      />
     );
   }
 
   return (
-    <ScrollView
+    <FlatList
+      data={postulants}
+      renderItem={renderItem}
+      keyExtractor={(item) => `${item.ID}-${item.etudiantEmail}`}
       contentContainerStyle={styles.container}
+      ListHeaderComponent={() => (
+        <>
+          <Text style={styles.title}>Listes des stages Postulés</Text>
+          {error && (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          )}
+        </>
+      )}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
-    >
-      <Text style={styles.title}>Listes des stages Postulés</Text>
-      
-      {error && (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-        </View>
-      )}
-
-      {postulants.map((postulant) => (
-        <Animated.View key={`${postulant.ID}-${postulant.etudiantEmail}`} style={styles.card}>
-          <View style={styles.cardBody}>
-            <Text style={styles.cardTitle}>
-              <Icon name="work" size={18} color="blue" /> {postulant.stageDomaine} : {postulant.entrepriseName}
-            </Text>
-            <Text>
-              <Text style={styles.bold}><Icon name="person" size={16} /> Nom et Prenom:</Text> {postulant.etudiantName}
-            </Text>
-            <Text>
-              <Text style={styles.bold}><Icon name="email" size={16} /> Email:</Text> {postulant.etudiantEmail}
-            </Text>
-            <Text>
-              <Text style={styles.bold}><Icon name="school" size={16} /> Institue:</Text> {postulant.etudiantInstitue}
-            </Text>
-            <Text>
-              <Text style={styles.bold}><Icon name="business-center" size={16} /> Domaine:</Text> {postulant.stageDomaine}
-            </Text>
-            <Text>
-              <Text style={styles.bold}><Icon name="category" size={16} /> Section:</Text> {postulant.etudiantSection}
-            </Text>
-            <Text>
-              <Text style={styles.bold}><Icon name="description" size={16} /> Sujet:</Text> {postulant.stageSujet}
-            </Text>
-            <Text style={{ color: getStatusColor(postulant.status), fontWeight: 'bold' }}>
-              <Text style={styles.bold}><Icon name="check-circle" size={16} /> Status:</Text> {postulant.status}
-            </Text>
-            <Text>
-              <Text style={styles.bold}><Icon name="calendar-today" size={16} /> Date de postulation:</Text> {postulant.postulatedAt}
-            </Text>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigation.navigate('MoreDetails', {
-                stageId: postulant.stageId,
-                etudiantEmail: postulant.etudiantEmail
-              })}
-            >
-              <Text><Icon name="info" size={16} /> View more Details</Text>
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
-      ))}
-    </ScrollView>
+    />
   );
 };
 

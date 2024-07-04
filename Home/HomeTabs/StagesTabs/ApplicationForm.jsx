@@ -8,6 +8,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ApplicationForm = ({ route, navigation }) => {
   const { stage } = route.params;
@@ -52,11 +53,13 @@ const ApplicationForm = ({ route, navigation }) => {
       const stageId =stage  // stage.id; // Assuming you have stage.id available from route.params
       const url =`${process.env.BACKEND_URL}/etudiant/check-email?email=${email}&stageId=${stageId}`;
     
-  
+      const token = await AsyncStorage.getItem('userToken');
+
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+             'Authorization': `Bearer ${token}`
         },
       });
   
@@ -181,39 +184,14 @@ const ApplicationForm = ({ route, navigation }) => {
     }
   
 
-/*     if (formData.cv) {
-      formDataToSend.append('cv', {
-        uri: formData.cv.uri,
-        name: formData.cv.name,
-        type: formData.cv.type,
-      });
-    }
-    if (formData.lettre_motivation) {
-      formDataToSend.append('lettre_motivation', {
-        uri: formData.lettre_motivation.uri,
-        name: formData.lettre_motivation.name,
-        type: formData.lettre_motivation.type,
-      });
-    }
-    if (formData.releves_notes) {
-      formDataToSend.append('releves_notes', {
-        uri: formData.releves_notes.uri,
-        name: formData.releves_notes.name,
-        type: formData.releves_notes.type,
-      });
-    }
- */
-    // Debugging information
-    console.log('Form Data to Send:', formDataToSend);
-
-    // Prepare the API call
     try {
       const id = stage;
-      console.log('Backend URL:', process.env.BACKEND_URL);
+      const token = await AsyncStorage.getItem('userToken');
 
       const response = await axios.post(`${process.env.BACKEND_URL}/etudiant/postulates/${id}`, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
+             'Authorization': `Bearer ${token}`
         },
       });
 
@@ -375,24 +353,6 @@ const ApplicationForm = ({ route, navigation }) => {
     setErrors(newErrors);
     return isValid;
   };
-
-/*   const handleSubmit = () => {
-    if (!formData.termsAccepted) {
-      Alert.alert('Erreur', 'Vous devez accepter les termes avant de soumettre.');
-      return;
-    }
-
-    if (!validateForm()) {
-      Alert.alert('Erreur', 'Veuillez remplir tous les champs obligatoires.');
-      return;
-    }
-
-    console.log(formData);
-    Alert.alert('Formulaire soumis', 'Votre candidature a été soumise avec succès.');
-  }; */
-
-  
-  
 
   return (
     <SafeAreaView style={{ flex: 1 , paddingBottom:30 }}>
@@ -576,6 +536,7 @@ const ApplicationForm = ({ route, navigation }) => {
           placeholder="Date de début souhaitée"
           value={formData.date_debut}
           onChangeText={(value) => handleInputChange('date_debut', value)}
+          inputMode="start"
         /> 
  
  {/* <View style={styles.inputContainer}>
@@ -743,7 +704,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignItems: 'center',
     marginTop: 16,
-    marginBottom: 16,
+    marginBottom: 30,
+    overflow: 'hidden',
   },
   submitButtonDisabled: {
     backgroundColor: 'lightgray',

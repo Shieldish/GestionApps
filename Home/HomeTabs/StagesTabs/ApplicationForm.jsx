@@ -241,7 +241,7 @@ const ApplicationForm = ({ route, navigation }) => {
   const navigateToAnotherComponent = () => {
     // Navigate to another component after successful submission
     // Example navigation logic, adjust as per your navigation setup (e.g., React Navigation)
-    navigations.navigate('StagesPostuler');
+    navigation.navigate('HomeTabs', { screen: 'StagesPostuler' });
   };
 
 

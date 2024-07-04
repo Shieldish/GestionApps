@@ -57,38 +57,46 @@ const MoreDetails = ({ route }) => {
                     <View style={styles.card}>
                         <Text style={styles.title}>{candidature.nom} {candidature.prenom}</Text>
                         <View style={styles.separator} />
-                        <Text style={styles.subtitle}>Informations personnelles</Text>
+                        
+                        {/* Using subtitle as legend */}
+                        <Text style={styles.legend}>Informations personnelles</Text>
                         <Text><Text style={styles.bold}>Date de naissance:</Text> {candidature.date_naissance}</Text>
                         <Text><Text style={styles.bold}>Adresse:</Text> {candidature.adresse}</Text>
                         <Text><Text style={styles.bold}>Téléphone:</Text> {candidature.telephone}</Text>
                         <Text><Text style={styles.bold}>Email:</Text> {candidature.email}</Text>
                         <View style={styles.separator} />
-                        <Text style={styles.subtitle}>Formation</Text>
+                        
+                        <Text style={styles.legend}>Formation</Text>
                         <Text><Text style={styles.bold}>Niveau d'études:</Text> {candidature.niveau_etudes}</Text>
                         <Text><Text style={styles.bold}>Institution:</Text> {candidature.institution}</Text>
                         <Text><Text style={styles.bold}>Domaine d'études:</Text> {candidature.domaine_etudes}</Text>
                         <Text><Text style={styles.bold}>Section:</Text> {candidature.section}</Text>
                         <Text><Text style={styles.bold}>Année d'obtention:</Text> {candidature.annee_obtention}</Text>
                         <View style={styles.separator} />
-                        <Text style={styles.subtitle}>Expérience pertinente</Text>
+                        
+                        <Text style={styles.legend}>Expérience pertinente</Text>
                         <Text><Text style={styles.bold}>Expérience:</Text> {candidature.experience ? 'Oui' : 'Non'}</Text>
                         {candidature.experience_description && <Text><Text style={styles.bold}>Description de l'expérience:</Text> {candidature.experience_description}</Text>}
                         <View style={styles.separator} />
-                        <Text style={styles.subtitle}>Motivation pour ce stage</Text>
+                        
+                        <Text style={styles.legend}>Motivation pour ce stage</Text>
                         <Text><Text style={styles.bold}>Motivation:</Text> {candidature.motivation}</Text>
                         <View style={styles.separator} />
-                        <Text style={styles.subtitle}>Compétences</Text>
+                        
+                        <Text style={styles.legend}>Compétences</Text>
                         <Text><Text style={styles.bold}>Langues:</Text> {candidature.langues}</Text>
                         <Text><Text style={styles.bold}>Logiciels:</Text> {candidature.logiciels}</Text>
                         <Text><Text style={styles.bold}>Autres compétences:</Text> {candidature.competences_autres}</Text>
                         <View style={styles.separator} />
-                        <Text style={styles.subtitle}>Disponibilités</Text>
+                        
+                        <Text style={styles.legend}>Disponibilités</Text>
                         <Text><Text style={styles.bold}>Date de début:</Text> {candidature.date_debut}</Text>
                         <Text><Text style={styles.bold}>Durée du stage:</Text> {candidature.duree_stage} mois</Text>
                         <View style={styles.separator} />
-                        <Text style={styles.subtitle}>Pièces justificatives</Text>
-                       {/* Render CV link */}
-                       <Text>
+                        
+                        <Text style={styles.legend}>Pièces justificatives</Text>
+                        {/* Render CV link */}
+                        <Text>
                             <Text style={styles.bold}>CV :</Text>
                             {candidature.cv ? (
                                 <Text onPress={() => Linking.openURL(candidature.cv)} style={styles.link}>
@@ -173,10 +181,11 @@ const styles = StyleSheet.create({
         marginVertical: 20,
         fontSize: 24
     },
-    subtitle: {
+    legend: {
         fontWeight: 'bold',
         fontSize: 16,
-        marginBottom: 5
+        marginBottom: 5,
+        color: '#007bff' // Adjust color as needed
     },
     bold: {
         fontWeight: 'bold'
@@ -216,8 +225,6 @@ const styles = StyleSheet.create({
     statusRejected: {
         backgroundColor: '#dc3545', // red
     },
-
-  
 });
 
 export default MoreDetails;

@@ -26,8 +26,10 @@ function App() {
         <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }} />
         <Stack.Screen name="Postulation" component={Postulation} options={{ headerShown: true, title: 'Postulation' }} />
         <Stack.Screen name="ApplicationForm" component={ApplicationForm} options={{ title: 'Formulaire de Candidature' }} />
-        <Stack.Screen name="StagesPostuler" component={StagesPostuler} />
-        <Stack.Screen name="MoreDetails" component={MoreDetails} options={{ title: 'Candidature'}} />
+        <Stack.Screen name="StagesPostuler" component={StagesPostuler}    options={{
+         
+    }}/>
+        <Stack.Screen name="MoreDetails" component={MoreDetails} options={{ title: 'Candidature' , }}  />
       </Stack.Navigator>
     </NavigationContainer>
   );

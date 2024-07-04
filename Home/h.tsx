@@ -1,10 +1,8 @@
 import 'react-native-gesture-handler';
 import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-
 import Profiles from './HomeDrawers/Profiles';
 import Settings from './HomeDrawers/Settings';
 import About from './HomeDrawers/Abouts';
@@ -16,7 +14,6 @@ import Resultats from './HomeTabs/Resultats';
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
 
 const HomeTabs = () => {
   return (

@@ -1,53 +1,45 @@
-// Home.jsx
+import React, { useState } from 'react';
+import { Button, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+const Logout = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
 
-const Deconnexion = () => {
-  const navigation = useNavigation();
+  const handleLogout = async () => {
+    setLoading(true); // Show loading state
 
+    try {
+      await AsyncStorage.removeItem('userToken');
+      await AsyncStorage.removeItem('userData'); // If you're storing user data
+
+      // Show success alert before navigation
+      Alert.alert('Logout Successful', 'You have been logged out successfully.', [
+        {
+          text: 'OK',
+          onPress: () => {
+            // Navigate to Login screen after logout
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Login' }],
+            });
+          }
+        }
+      ]);
+
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Show the error message as a plain string
+      Alert.alert('Logout Error', 'An error occurred during logout. Please try again.');
+    } finally {
+      setLoading(false); // Hide loading state
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to the Home Page</Text>
-    
-      
-      
-    </View>
+    <>
+      <Button title="Logout" onPress={handleLogout} />
+    </>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#007bff',
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#007bff',
-    paddingVertical: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
-
-export default Deconnexion;
+export default Logout;

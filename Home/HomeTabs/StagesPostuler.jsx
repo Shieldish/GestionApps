@@ -164,6 +164,7 @@ const PostulantList = () => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
+      showsVerticalScrollIndicator={false} // Add this line
     />
   );
 };

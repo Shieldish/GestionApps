@@ -40,7 +40,7 @@ const Stages = () => {
         params: {
           search: search.trim(),
           page: pagination.currentPage.toString(),
-          limit: '10',
+          limit: '5',
           ...filters,
         }
       });
@@ -106,58 +106,28 @@ const Stages = () => {
       <View style={styles.cardBody}>
         <Text style={styles.jobCompany}>{item.Nom} - {item.Domaine}</Text>
 
-        <View style={styles.hrLine} />
+        <View
+          style={{
+            borderBottomColor: 'black',
+            borderBottomWidth: StyleSheet.hairlineWidth,
+            marginBottom: 20,
+          }}
+        />
 
-        <View style={styles.detailContainer}>
-          <View style={styles.detailRow}>
-            <Icon  color="blue" name="building" size={16} />
-            <Text style={styles.detailText}><Text style={styles.boldText}>Société/Entreprise:</Text> {item.Nom} : {item.Address}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Icon  color="blue" name="android" size={16} />
-            <Text style={styles.detailText}><Text style={styles.boldText}>Stage ID:</Text> {item.id}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Icon  color="blue" name="briefcase" size={16} />
-            <Text style={styles.detailText}><Text style={styles.boldText}>Domaine :</Text> {item.Domaine}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Icon  color="blue" name="pencil" size={16} />
-            <Text style={styles.detailText}><Text style={styles.boldText}>Sujets:</Text> {item.Libelle} : {item.Titre}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Icon  color="blue" name="book" size={16} />
-            <Text style={styles.detailText}><Text style={styles.boldText}>Description:</Text> {item.Description}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Icon  color="blue" name="university" size={16} />
-            <Text style={styles.detailText}><Text style={styles.boldText}>Niveau :</Text> {item.Niveau}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Icon  color="blue" name="bars" size={16} />
-            <Text style={styles.detailText}><Text style={styles.boldText}>Experience :</Text> {item.Experience}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Icon  color="blue" name="language" size={16} />
-            <Text style={styles.detailText}><Text style={styles.boldText}>Langue:</Text> {item.Langue}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Icon  color="blue" name="map-marker" size={16} />
-            <Text style={styles.detailText}><Text style={styles.boldText}>Address :</Text> {item.Address}, {item.Rue}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Icon  color="blue" name="phone" size={16} />
-            <Text style={styles.detailText}><Text style={styles.boldText}>Contact :</Text> {item.Telephone} / {item.Fax}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Icon  color="blue" name="envelope" size={16} />
-            <Text style={styles.detailText}><Text style={styles.boldText}>Mail :</Text> {item.Email} / {item.Email2}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Icon  color="blue" name="calendar" size={16} />
-            <Text style={styles.detailText}><Text style={styles.boldText}>Début :</Text> {new Date(item.DateDebut).toLocaleDateString()} - <Text style={styles.boldText}>Fin :</Text> {new Date(item.DateFin).toLocaleDateString()}</Text>
-          </View>
-        </View>
+        <Text style={styles.jobDetails}><Icon name="building" size={16} /> <Text style={styles.boldText}>Sociéte/Entreprise:</Text> {item.Nom} : {item.Address} </Text>
+
+        <Text style={styles.jobDetails}><Icon name="android" size={16} /> <Text style={styles.boldText}>StageID:</Text> {item.id}</Text>
+
+        <Text style={styles.jobDetails}><Icon name="briefcase" size={16} /> <Text style={styles.boldText}>Domaine :</Text> {item.Domaine}</Text>
+        <Text style={styles.jobDetails}><Icon name="pencil" size={16} /> <Text style={styles.boldText}>Sujets:</Text> {item.Libelle} : {item.Titre} </Text>
+        <Text style={styles.jobDetails}><Icon name="book" size={16} /> <Text style={styles.boldText}>Description:</Text> {item.Description}</Text>
+        <Text style={styles.jobDetails}><Icon name="university" size={16} /> <Text style={styles.boldText}>Niveau :</Text> {item.Niveau}</Text>
+        <Text style={styles.jobDetails}><Icon name="bars" size={16} /> <Text style={styles.boldText}>Experience :</Text> {item.Experience}</Text>
+        <Text style={styles.jobDetails}><Icon name="language" size={16} /> <Text style={styles.boldText}>Langue:</Text> {item.Langue}</Text>
+        <Text style={styles.jobDetails}><Icon name="map-marker" size={16} /> <Text style={styles.boldText}>Address :</Text> {item.Address}, {item.Rue}</Text>
+        <Text style={styles.jobDetails}><Icon name="phone" size={16} /> <Text style={styles.boldText}>Contact :</Text> {item.Telephone} / {item.Fax}</Text>
+        <Text style={styles.jobDetails}><Icon name="envelope" size={16} /> <Text style={styles.boldText}>Mail :</Text> {item.Email} / {item.Email2}</Text>
+        <Text style={styles.jobDetails}><Icon name="calendar" size={16} /> <Text style={styles.boldText}>Debut :</Text> {new Date(item.DateDebut).toLocaleDateString()} - <Text style={styles.boldText}>Fin :</Text> {new Date(item.DateFin).toLocaleDateString()}</Text>
 
         <TouchableOpacity
           style={styles.postulateButton}
@@ -211,7 +181,6 @@ const Stages = () => {
             refreshing={refreshing}
             onRefresh={handleRefresh}
             contentContainerStyle={{ paddingBottom: 20 }}
-            showsVerticalScrollIndicator={false} // Add this line
           />
         )
       )}
@@ -240,9 +209,9 @@ const Stages = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 20,
-   
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    backgroundColor: '#fff',
   },
   searchInput: {
     height: 40,
@@ -258,19 +227,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     padding: 12,
     elevation: 3,
-    
   },
   cardBody: {
     flex: 1,
   },
   jobCompany: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
-    textAlign:"center",
-    textTransform:"uppercase",
-    color:"#007bff",
-    fontStyle:"bold"
   },
   hrLine: {
     borderBottomColor: 'black',
@@ -293,7 +257,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   postulateButton: {
-    backgroundColor: '#192f6a',
+    backgroundColor: '#007bff',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 6,
@@ -306,7 +270,6 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 12,
-    alignItems:"center"
   },
   headerText: {
     fontSize: 24,

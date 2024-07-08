@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import Icons from 'react-native-vector-icons/FontAwesome';
 import {
   StyleSheet,
   View,
@@ -12,6 +13,8 @@ import axios from 'axios';
 import ContentLoader, { Rect } from 'react-content-loader/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const PostulantList = () => {
   const [postulants, setPostulants] = useState([]);
@@ -21,11 +24,45 @@ const PostulantList = () => {
 
   const navigation = useNavigation();
 
+ /*  const fetchPostulants = async () => {
+    try {
+      setError(null);
+
+      const token = await AsyncStorage.getItem('userToken');
+
+      const response = await axios.get(`${process.env.BACKEND_URL}/etudiant/stage_postuler`);
+      setPostulants(response.data.postulant);
+    } catch (error) {
+      console.error('Error fetching postulants:', error);
+      setError('Failed to load postulants. Please try again later.');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+ */
   const fetchPostulants = async () => {
     try {
       setError(null);
-      const response = await axios.get(`${process.env.BACKEND_URL}/etudiant/stage_postuler`);
-      setPostulants(response.data.postulant);
+      setLoading(true);
+      setRefreshing(true);
+  
+      const token = await AsyncStorage.getItem('userToken');
+     
+  
+      if (token) {
+        const response = await axios.get(
+          `${process.env.BACKEND_URL}/etudiant/stage_postuler2`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setPostulants(response.data.postulant);
+      } else {
+        throw new Error('No token found');
+      }
     } catch (error) {
       console.error('Error fetching postulants:', error);
       setError('Failed to load postulants. Please try again later.');
@@ -113,6 +150,9 @@ const PostulantList = () => {
           </Text>
           <Text>
             <Text style={styles.bold}><Icon name="description" size={16} /> Sujet:</Text> {item.stageSujet}
+          </Text>
+          <Text>
+            <Text style={styles.bold}><Icon name="home" size={16} /> Entreprise/Société:</Text> {item.entrepriseName}
           </Text>
           <Text style={{ color: getStatusColor(item.status), fontWeight: 'bold' }}>
             <Text style={styles.bold}><Icon name="check-circle" size={16} /> Status:</Text> {item.status}

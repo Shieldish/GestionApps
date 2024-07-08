@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   jobCompany: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 8,
+    margin: 30,
     textAlign:"center",
     textTransform:"uppercase",
     color:"#007bff",

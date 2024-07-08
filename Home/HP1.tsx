@@ -1,10 +1,12 @@
-// HomePage.js
+
 import React, { useRef, useCallback } from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet, Dimensions, Animated } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+
+// Import your components
 import LogoutBottomSheet from './HomeDrawers/Deconnexion';
 import Profiles from './HomeDrawers/Profiles';
 import Settings from './HomeDrawers/Settings';
@@ -16,11 +18,16 @@ import Resultats from './HomeTabs/Resultats';
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
+
+const { width } = Dimensions.get('window');
+
 const HomeTabs = () => {
+  const tabOffsetValue = useRef(new Animated.Value(0)).current;
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerShown: false, // Hide the header for all tab screens
+        headerShown: false,
         tabBarIcon: ({ color, size }) => {
           let iconName;
           switch (route.name) {
@@ -43,22 +50,30 @@ const HomeTabs = () => {
         },
         tabBarActiveTintColor: '#007bff',
         tabBarInactiveTintColor: 'gray',
-        tabBarStyle: {
-          backgroundColor: '#f5f5f5',
-          borderTopColor: '#ccc',
-          paddingBottom: 5,
-          paddingTop: 5,
-          height: 60,
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
-        },
+        tabBarStyle: styles.tabBar,
+        tabBarLabelStyle: styles.tabBarLabel,
       })}
     >
-      <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home' }} />
-      <Tab.Screen name="Stages" component={Stages} options={{ tabBarLabel: 'Stages' }} />
-      <Tab.Screen name="StagesPostuler" component={StagesPostuler} options={{ tabBarLabel: 'Candidatures' }} />
-      <Tab.Screen name="Resultats" component={Resultats} options={{ tabBarLabel: 'Resultats' }} />
+      {['Home', 'Stages', 'StagesPostuler', 'Resultats'].map((name, index) => (
+        <Tab.Screen 
+          key={name}
+          name={name} 
+          component={
+            name === 'Home' ? Home :
+            name === 'Stages' ? Stages :
+            name === 'StagesPostuler' ? StagesPostuler : Resultats
+          }
+          options={{ tabBarLabel: name === 'StagesPostuler' ? 'Candidatures' : name }}
+          listeners={{
+            focus: () => {
+              Animated.spring(tabOffsetValue, {
+                toValue: index * (width / 4),
+                useNativeDriver: true
+              }).start();
+            }
+          }}
+        />
+      ))}
     </Tab.Navigator>
   );
 };
@@ -74,10 +89,15 @@ const HomePage = () => {
 
   return (
     <BottomSheetModalProvider>
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
         <Drawer.Navigator
           screenOptions={({ route }) => ({
             headerShown: true,
+            headerStyle: styles.drawerHeader,
+            headerTitleStyle: styles.drawerHeaderTitle,
+            drawerStyle: styles.drawer,
+            drawerLabelStyle: styles.drawerLabel,
+            drawerItemStyle: styles.drawerItem,
             drawerIcon: ({ color, size }) => {
               let iconName;
               switch (route.name) {
@@ -94,7 +114,7 @@ const HomePage = () => {
                   iconName = 'info-circle';
                   break;
                 case 'Logout':
-                  iconName = 'sign-out';
+                  iconName = 'sign-out-alt';
                   break;
                 default:
                   iconName = 'question';
@@ -130,15 +150,15 @@ const HomePage = () => {
           />
           <Drawer.Screen
             name="Logout"
-            component={View} // Use an empty View as we don't need a separate screen
+            component={View}
             options={{ 
               drawerLabel: 'Logout',
               drawerIcon: ({ color, size }) => (
-                <Icon name="sign-out" size={size} color={color} />
+                <Icon name="sign-out-alt" size={size} color={color} />
               ),
             }}
             listeners={{
-              focus: handleLogoutPress, // This will trigger when the Logout item is pressed
+              focus: handleLogoutPress,
             }}
           />
         </Drawer.Navigator>
@@ -148,6 +168,42 @@ const HomePage = () => {
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  tabBar: {
+    backgroundColor: '#ffffff',
+    borderTopWidth: 0,
+    elevation: 8,
+    height: 60,
+    paddingBottom: 5,
+    paddingTop: 5,
+  },
+  tabBarLabel: {
+    fontSize: 12,
+  },
+  drawer: {
+    backgroundColor: '#ffffff',
+    width: 240,
+  },
+  drawerHeader: {
+    backgroundColor: '#007bff',
+  },
+  drawerHeaderTitle: {
+    color: '#ffffff',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  drawerLabel: {
+    fontSize: 16,
+  },
+  drawerItem: {
+    borderRadius: 8,
+    marginHorizontal: 10,
+    marginVertical: 5,
+  },
+});
+
 export default HomePage;
-
-

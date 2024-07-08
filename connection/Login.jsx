@@ -1,6 +1,5 @@
-//Login.jsx
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,11 +13,31 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigation = useNavigation();
+  
+  // Animation references
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const translateYAnim = useRef(new Animated.Value(30)).current;
 
   useEffect(() => {
     // Clear error message whenever email or password changes
     setErrorMessage('');
   }, [email, password]);
+
+  useEffect(() => {
+    // Run animations when the component mounts
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateYAnim, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      })
+    ]).start();
+  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -50,8 +69,7 @@ const Login = () => {
         await AsyncStorage.setItem('userData', JSON.stringify(data.userData));
 
         // Navigate to next screen or handle success
-      /*   navigation.navigate('HomePage', { userId: data.userId }); */
-      navigation.replace('HomePage');
+        navigation.replace('HomePage');
       } else {
         // Handle login failure
         setErrorMessage(data.message || 'Login failed');
@@ -68,14 +86,17 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.contentWrapper}>
+      <Animated.View style={[styles.contentWrapper, { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }]}>
         <Text style={styles.title}>Login</Text>
         
         {errorMessage ? (
-          <Text style={styles.errorMessage}>{errorMessage}</Text>
+          <View style={styles.errorCard}>
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
+          </View>
         ) : null}
         
         <View style={styles.inputContainer}>
+          <Icon name="envelope" size={20} color="gray" style={styles.inputIcon} />
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -86,6 +107,7 @@ const Login = () => {
         </View>
         
         <View style={styles.inputContainer}>
+          <Icon name="lock" size={20} color="gray" style={styles.inputIcon} />
           <TextInput
             style={styles.input}
             placeholder="Password"
@@ -124,7 +146,7 @@ const Login = () => {
             <Text style={styles.registerText}>Register</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
     </View>
   );
 };
@@ -134,7 +156,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#e3f2fd',
   },
   contentWrapper: {
     width: '80%',
@@ -148,22 +170,29 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#007bff',
     textAlign: 'center',
   },
   inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 15,
     position: 'relative',
-  },
-  input: {
-    height: 50,
     borderColor: '#ddd',
     borderWidth: 1,
     borderRadius: 5,
     paddingLeft: 10,
+    backgroundColor: '#f9f9f9',
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    height: 50,
     paddingRight: 40, // Add padding to prevent text overlap with the icon
   },
   passwordToggleIcon: {
@@ -204,9 +233,23 @@ const styles = StyleSheet.create({
     color: '#007bff',
     marginLeft: 5,
   },
+  errorCard: {
+    padding: 15,
+    backgroundColor: '#ffcccc',
+    borderRadius: 5,
+    marginBottom: 15,
+    alignItems: 'center',
+    borderColor: '#ff6666',
+    borderWidth: 1,
+    shadowColor: '#ff0000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 3,
+  },
   errorMessage: {
-    color: 'red',
-    marginBottom: 10,
+    color: '#b30000',
+    fontSize: 16,
     textAlign: 'center',
   },
 });

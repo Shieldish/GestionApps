@@ -1,18 +1,83 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo ,useCallback } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Platform, TextInput,Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import Collapsible from 'react-native-collapsible';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Divider = () => <View style={styles.divider} />;
 
-const JobCard = React.memo(({ job }) => {
-
-    
+const JobCard = React.memo(({ job, onToggleFavorite }) => {
+  const [isFavorite, setIsFavorite] = useState(false);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      try {
+        const favoriteJobs = await AsyncStorage.getItem('favoriteJobs');
+        if (favoriteJobs !== null) {
+          const favorites = JSON.parse(favoriteJobs);
+          setIsFavorite(favorites.includes(job.id));
+        }
+      } catch (error) {
+        console.error('Error checking favorite status:', error);
+      }
+    };
+    checkFavoriteStatus();
+  }, [job.id]);
+
+ /*  const toggleFavorite = useCallback(async () => {
+    try {
+      const favoriteJobs = await AsyncStorage.getItem('favoriteJobs');
+      let favorites = favoriteJobs ? JSON.parse(favoriteJobs) : [];
+      
+      if (isFavorite) {
+        favorites = favorites.filter(id => id !== job.id);
+      } else {
+        favorites.push(job.id);
+      }
+      
+      await AsyncStorage.setItem('favoriteJobs', JSON.stringify(favorites));
+      setIsFavorite(!isFavorite);
+      onToggleFavorite(job, !isFavorite);
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  }, [isFavorite, job, onToggleFavorite]); */
+  
+  const toggleFavorite = useCallback(async () => {
+    try {
+      const favoriteJobs = await AsyncStorage.getItem('favoriteJobs');
+      let favorites = favoriteJobs ? JSON.parse(favoriteJobs) : [];
+      
+      if (isFavorite) {
+        favorites = favorites.filter(id => id !== job.id);
+      } else {
+        favorites.push(job.id);
+      }
+      
+      await AsyncStorage.setItem('favoriteJobs', JSON.stringify(favorites));
+      setIsFavorite(!isFavorite);
+      if (typeof onToggleFavorite === 'function') {
+        onToggleFavorite(job, !isFavorite);
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  }, [isFavorite, job, onToggleFavorite]);
 
   return (
     <View style={styles.card}>
+      <TouchableOpacity
+        style={styles.favoriteButton}
+        onPress={toggleFavorite}
+      >
+        <Ionicons
+          name={isFavorite ? 'heart' : 'heart-outline'}
+          size={24}
+          color={isFavorite ? 'red' : 'black'}
+        />
+      </TouchableOpacity>
       <Text style={styles.cardTitle}>{job.Titre}</Text>
       <Text style={styles.cardSubtitle}>{job.Libelle}</Text>
       <Text style={styles.cardInfo2}>{job.Nom} - {job.Address}</Text>
@@ -21,9 +86,8 @@ const JobCard = React.memo(({ job }) => {
       <Text style={styles.cardInfo}><Text style={styles.bold}>Postes Vacants:</Text> {job.PostesVacants}</Text>
       <Text style={styles.cardInfo}><Text style={styles.bold}>Date Debut:</Text> {new Date(job.DateDebut).toLocaleDateString()}</Text>
       <Text style={styles.cardInfo}><Text style={styles.bold}>Date Fin:</Text> {new Date(job.DateFin).toLocaleDateString()}</Text>
-
-   <Text style={styles.cardInfo3}>Publié le : {new Date(job.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</Text>
-        <Divider />
+      <Text style={styles.cardInfo3}>Publié le : {new Date(job.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</Text>
+      <Divider />
       <TouchableOpacity style={styles.button}
         onPress={() => navigation.navigate('Postulation', { stage: job })}
       >
@@ -34,12 +98,36 @@ const JobCard = React.memo(({ job }) => {
 });
 
 
-
 const JobListings = ({ data }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState(data);
   const [sortOrder, setSortOrder] = useState('newest'); // 'newest' or 'oldest'
 
+  const [favoriteJobs, setFavoriteJobs] = useState([]);
+
+  useEffect(() => {
+    const loadFavoriteJobs = async () => {
+      try {
+        const savedFavorites = await AsyncStorage.getItem('favoriteJobs');
+        if (savedFavorites !== null) {
+          const favoriteIds = JSON.parse(savedFavorites);
+          const favorites = data.filter(job => favoriteIds.includes(job.id));
+          setFavoriteJobs(favorites);
+        }
+      } catch (error) {
+        console.error('Error loading favorite jobs:', error);
+      }
+    };
+    loadFavoriteJobs();
+  }, [data]);
+
+  const handleToggleFavorite = useCallback((job, isFavorite) => {
+    setFavoriteJobs(prevFavorites => 
+      isFavorite
+        ? [...prevFavorites, job]
+        : prevFavorites.filter(favJob => favJob.id !== job.id)
+    );
+  }, []);
 
   useEffect(() => {
     const filtered = data.filter(job => 
@@ -166,25 +254,25 @@ const JobListings = ({ data }) => {
         </View>
       ) : (
         <FlatList
-          data={searchTerm ? filteredData : groupedData}
-          renderItem={searchTerm ? 
-            ({ item }) => <JobCard job={item} /> :
-            ({ item: [domain, jobs] }) => (
-              <View style={styles.domaineContainer}>
-                <Text style={styles.domaineTitle}>{domain}</Text>
-                <FlatList
-                  data={jobs}
-                  renderItem={({ item }) => <JobCard job={item} />}
-                  keyExtractor={(item) => item.id}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                />
-                <Divider />
-              </View>
-            )
-          }
-          keyExtractor={searchTerm ? (item) => item.id : ([domain]) => domain}
-        />
+        data={searchTerm ? filteredData : groupedData}
+        renderItem={searchTerm ? 
+          ({ item }) => <JobCard job={item} onToggleFavorite={handleToggleFavorite} /> :
+          ({ item: [domain, jobs] }) => (
+            <View style={styles.domaineContainer}>
+              <Text style={styles.domaineTitle}>{domain}</Text>
+              <FlatList
+                data={jobs}
+                renderItem={({ item }) => <JobCard job={item} onToggleFavorite={handleToggleFavorite} />}
+                keyExtractor={(item) => item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              />
+              <Divider />
+            </View>
+          )
+        }
+        keyExtractor={searchTerm ? (item) => item.id : ([domain]) => domain}
+      />
       )}
     </View>
   );
@@ -355,6 +443,12 @@ const styles = StyleSheet.create({
   },
   activeFilter: {
     backgroundColor: '#e6f0ff',
+  },
+  favoriteButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1,
   },
  
 });

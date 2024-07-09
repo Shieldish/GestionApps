@@ -582,20 +582,20 @@ const ApplicationForm = ({ route, navigation }) => {
           <Text style={styles.sectionTitle}>Documents</Text>
           <TouchableOpacity style={styles.filePickerButton} onPress={() => handleFilePicker('cv')}>
             <Text style={styles.filePickerButtonText}>
-              {formData.cv ? formData.cv.name : 'Ajouter votre CV'}
+              {formData.cv ? formData.cv.name : 'Ajouter votre CV (obligatoire)'}
             </Text>
           </TouchableOpacity>
           {errors.cv && <Text style={styles.errorText}>{errors.cv}</Text>}
 
           <TouchableOpacity style={styles.filePickerButton} onPress={() => handleFilePicker('lettre_motivation')}>
             <Text style={styles.filePickerButtonText}>
-              {formData.lettre_motivation ? formData.lettre_motivation.name : 'Ajouter une lettre de motivation'}
+              {formData.lettre_motivation ? formData.lettre_motivation.name : 'Ajouter une lettre de motivation (optionel)'}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.filePickerButton} onPress={() => handleFilePicker('releves_notes')}>
             <Text style={styles.filePickerButtonText}>
-              {formData.releves_notes ? formData.releves_notes.name : 'Ajouter vos relevés de notes'}
+              {formData.releves_notes ? formData.releves_notes.name : 'Ajouter votre dernier relevés de notes (optionel)'}
             </Text>
           </TouchableOpacity>
         </View>

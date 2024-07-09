@@ -14,6 +14,7 @@ import Postulation from './Home/HomeTabs/StagesTabs/Postulation';
 import ApplicationForm from './Home/HomeTabs/StagesTabs/ApplicationForm';
 import StagesPostuler from './Home/HomeTabs/StagesPostuler';
 import MoreDetails from './Home/HomeTabs/StagesTabs/MoreDetails';
+import Favorites from './Home/HomeTabs/Favorites'
 
 const Stack = createStackNavigator();
 
@@ -61,6 +62,7 @@ const App = () => {
           <Stack.Screen name="ApplicationForm" component={ApplicationForm} options={{ title: 'Formulaire de Candidature' }} />
           <Stack.Screen name="StagesPostuler" component={StagesPostuler} options={{ title: 'Stages Postuler' }} />
           <Stack.Screen name="MoreDetails" component={MoreDetails} options={{ title: 'Candidature' }} />
+          <Stack.Screen name="Favorites" component={Favorites} options={{ title: 'Favoris' }} />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>

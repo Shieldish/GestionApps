@@ -9,10 +9,11 @@ import LogoutBottomSheet from './HomeDrawers/Deconnexion';
 import Profiles from './HomeDrawers/Profiles';
 import Settings from './HomeDrawers/Settings';
 import About from './HomeDrawers/Abouts';
-import Home from './HomeTabs/Home';
+import Home from './HomeTabs/Partials/HomeScreen';
 import Stages from './HomeTabs/Stages';
 import StagesPostuler from './HomeTabs/StagesPostuler';
 import Resultats from './HomeTabs/Resultats';
+import Favorites from './HomeTabs/Favorites'
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -30,6 +31,9 @@ const HomeTabs = () => {
             case 'Stages':
               iconName = 'briefcase';
               break;
+            case 'Favorites':
+              iconName = 'heart';
+              break;     
             case 'StagesPostuler':
               iconName = 'clipboard';
               break;
@@ -57,6 +61,7 @@ const HomeTabs = () => {
     >
       <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home' }} />
       <Tab.Screen name="Stages" component={Stages} options={{ tabBarLabel: 'Stages' }} />
+      <Tab.Screen name="Favorites" component={Favorites} options={{ tabBarLabel: 'Favoris' }} />
       <Tab.Screen name="StagesPostuler" component={StagesPostuler} options={{ tabBarLabel: 'Candidatures' }} />
       <Tab.Screen name="Resultats" component={Resultats} options={{ tabBarLabel: 'Resultats' }} />
     </Tab.Navigator>

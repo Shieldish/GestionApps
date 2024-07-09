@@ -44,7 +44,8 @@ const Stages = () => {
           ...filters,
         }
       });
-  
+           console.log(response.data.stages)   
+
       setStages(response.data.stages);
       setPagination({
         currentPage: response.data.pagination.currentPage,

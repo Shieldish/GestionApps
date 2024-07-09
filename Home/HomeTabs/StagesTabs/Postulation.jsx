@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   },
   postulerButton: {
     margin: 20,
-    borderRadius: 4,
+    borderRadius: 8,
     overflow: 'hidden',
     backgroundColor: '#192f6a',
    

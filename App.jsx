@@ -15,6 +15,7 @@ import ApplicationForm from './Home/HomeTabs/StagesTabs/ApplicationForm';
 import StagesPostuler from './Home/HomeTabs/StagesPostuler';
 import MoreDetails from './Home/HomeTabs/StagesTabs/MoreDetails';
 import Favorites from './Home/HomeTabs/Favorites'
+import { FavoritesProvider } from './Home/HomeTabs/Partials/FavoritesContext';
 
 const Stack = createStackNavigator();
 
@@ -50,7 +51,9 @@ const App = () => {
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+
+    <FavoritesProvider>
+     <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName={isLoggedIn ? "HomePage" : "Login"}>
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
@@ -66,6 +69,9 @@ const App = () => {
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>
+
+    </FavoritesProvider>
+    
   );
 };
 

@@ -4,9 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Divider } from 'react-native-elements';
-import { Ionicons } from '@expo/vector-icons';
-import { useFavorites } from './Partials/FavoritesContext';
-import BottomSheet from './Partials/BottomSheet'; 
 
 const Favorites = () => {
   const [favoriteJobs, setFavoriteJobs] = useState([]);
@@ -14,57 +11,6 @@ const Favorites = () => {
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
-  const { updateFavoritesCount } = useFavorites();
-  const [appliedJobs, setAppliedJobs] = useState({});
-  const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
-  const [jobToDelete, setJobToDelete] = useState(null);
-  const [theMail,SetEmail]=useState(null)
-
-  const checkAppliedStatus = async (email, jobId) => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      const response = await axios.get(`${process.env.BACKEND_URL}/etudiant/check-email`, {
-        params: { email, stageId: jobId },
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      console.log("response.data.exists;",response.data.exists)
-      return response.data.exists;
-    } catch (error) {
-      console.error('Error checking applied status:', error);
-      return false;
-    }
-  };
-
-
-
-  const handleDeletePress = (job) => {
-    setJobToDelete(job);
-    setIsBottomSheetVisible(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (jobToDelete) {
-      await handleToggleFavorite(jobToDelete, false);
-      setIsBottomSheetVisible(false);
-      setJobToDelete(null);
-    }
-  };
-
-  const renderStyledMessage = () => {
-    if (!jobToDelete) {
-      return <Text style={styles.messageText}>Are you sure you want to remove this job from your favorites?</Text>;
-    }
-
-    return (
-      <Text style={styles.messageText}>
-        Are you sure you want to remove this job:{' '}
-        <Text style={[styles.highlightedText, styles.greenText, styles.boldText]}>{jobToDelete.Titre}</Text>,{' '}
-        <Text style={[styles.highlightedText, styles.blueText, styles.boldText]}>{jobToDelete.Libelle}</Text>
-        {' '}from your favorites?
-      </Text>
-    );
-  };
 
   const fetchJobsByIds = async (ids) => {
     try {
@@ -76,7 +22,6 @@ const Favorites = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      updateFavoritesCount(response.data?.length)
       return response.data;
     } catch (error) {
       console.error('Error fetching jobs by IDs:', error);
@@ -92,24 +37,11 @@ const Favorites = () => {
         if (Array.isArray(favoriteIds) && favoriteIds.length > 0) {
           const favorites = await fetchJobsByIds(favoriteIds);
           setFavoriteJobs(Array.isArray(favorites) ? favorites : []);
-
-          // Check applied status for each job
-          const Data = await AsyncStorage.getItem('userData');
-          const data = JSON.parse(Data);
-          console.log("Data =", data.userData.EMAIL)
-          const email = data.userData.EMAIL;
-          SetEmail(email)
-          const appliedStatus = {};
-          for (const job of favorites) {
-            appliedStatus[job.id] = await checkAppliedStatus( email, job.id);
-          }
-          setAppliedJobs(appliedStatus);
         } else {
           setFavoriteJobs([]);
         }
       } else {
         setFavoriteJobs([]);
-        updateFavoritesCount(0);
       }
     } catch (error) {
       console.error('Error loading favorite jobs:', error);
@@ -133,11 +65,11 @@ const Favorites = () => {
       setFavoriteJobs(updatedFavorites);
       const favoriteIds = updatedFavorites.map(job => job.id);
       await AsyncStorage.setItem('favoriteJobs', JSON.stringify(favoriteIds));
-      updateFavoritesCount(favoriteIds.length);
     } catch (error) {
       console.error('Error updating favorite jobs:', error);
     }
   };
+
   const onRefresh = async () => {
     setRefreshing(true);
     await loadFavoriteJobs();
@@ -154,29 +86,14 @@ const Favorites = () => {
 
   if (error) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>Error loading favorite jobs: {error.message}</Text>
+      <View style={styles.container}>
+        <Text>Error loading favorite jobs: {error.message}</Text>
       </View>
-  
     );
   }
 
   const renderJob = ({ item: job }) => (
-    <View style={[
-      styles.jobContainer,
-      appliedJobs[job.id] && styles.appliedJobContainer
-    ]}>
-       <TouchableOpacity
-        style={styles.trashIcon}
-        onPress={() => handleDeletePress(job)}
-      >
-        <Ionicons name="trash-outline" size={24} color="red" />
-      </TouchableOpacity>
-      {appliedJobs[job.id] && (
-        <Text style={styles.appliedText}>Already Applied</Text>
-     
-      )}
-        
+    <View style={styles.jobContainer}>
       <Text style={styles.cardTitle}>{job.Titre}</Text>
       <Text style={styles.cardSubtitle}>{job.Libelle}</Text>
       <Text style={styles.cardInfo2}>{job.Nom} - {job.Address}</Text>
@@ -187,22 +104,8 @@ const Favorites = () => {
       <Text style={styles.cardInfo}><Text style={styles.bold}>Date Fin:</Text> {new Date(job.DateFin).toLocaleDateString()}</Text>
       <Text style={styles.cardInfo3}>Publié le : {new Date(job.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</Text>
       <Divider />
-      <TouchableOpacity 
-        style={[styles.button, appliedJobs[job.id] && styles.viewDetailsButton]}
-        onPress={() => {
-          if (appliedJobs[job.id]) {
-            navigation.navigate('MoreDetails', {
-              stageId:job.id,
-              etudiantEmail:theMail
-            })
-          } else {
-            navigation.navigate('Postulation', { stage: job });
-          }
-        }}
-      >
-        <Text style={styles.buttonText}>
-          {appliedJobs[job.id] ? 'View Application Details' : 'Postuler'}
-        </Text>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Postulation', { stage: job })}>
+        <Text style={styles.buttonText}>View More Details</Text>
       </TouchableOpacity>
     </View>
   );
@@ -228,18 +131,8 @@ const Favorites = () => {
           onRefresh={onRefresh}
           ListHeaderComponent={renderHeader}
           ListFooterComponent={renderFooter}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}
-          showsVerticalScrollIndicator={false}
-          onEndReachedThreshold={0.5}
         />
       )}
-      <BottomSheet
-        isVisible={isBottomSheetVisible}
-        onClose={() => setIsBottomSheetVisible(false)}
-        onConfirm={handleConfirmDelete}
-        message={renderStyledMessage()}
-      />
     </View>
   );
 };
@@ -248,7 +141,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    padding: 5,
+    padding: 10,
   },
   noFavoritesText: {
     fontSize: 18,
@@ -327,74 +220,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
     color: '#666',
-  },
-  errorContainer: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: 'pink',
-    borderRadius: 5,
-    marginVertical: 10,
-    borderWidth: 1,
-    borderColor: 'red',
-  },
-  errorText: {
-    color: 'red',
-    textAlign: 'center',
-  },
-  trashIcon: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    zIndex: 1,
-  },
-  messageText: {
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  highlightedText: {
-    fontWeight: 'bold',
-  },
-  greenText: {
-    color: 'green',
-  },
-  blueText: {
-    color: 'blue',
-  },
-  boldText: {
-    fontWeight: 'bold',
-  },
-  appliedJobContainer: {
-    borderColor: 'black',
-    backgroundColor :'beige'
-  },
-/*   appliedText: {
-    color: 'red',
-    fontWeight: 'bold',
-    position: 'absolute',
-    top: 5,
-    left: 5,
-  }, */
-  appliedText: {
-    color: 'red',
-    fontWeight: 'bold',
-    position: 'absolute',
-    top: 20,
-    left: -25,
-    transform: [{ rotate: '-45deg' }],
-    backgroundColor: 'rgba(255, 255, 255, 0.5)', // Semi-transparent white background
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 50,
-    overflow: 'hidden',
-    zIndex: 1, // Ensure it's above other elements
-  },
-  viewDetailsButton: {
-    backgroundColor: 'black',
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: 'bold',
   },
 });
 

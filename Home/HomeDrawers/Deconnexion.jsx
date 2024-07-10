@@ -98,7 +98,7 @@ import React, { useCallback, useMemo, forwardRef, useImperativeHandle, useState,
 import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
 import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import { logout } from '../../authService'; // Adjust the import path as needed
+import { logout } from '../../Services/authService'; // Adjust the import path as needed
 
 const LogoutBottomSheet = forwardRef((props, ref) => {
   const navigation = useNavigation();

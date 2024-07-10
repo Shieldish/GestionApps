@@ -1,6 +1,6 @@
 // HomePage.js
 import React, { useRef, useCallback } from 'react';
-import { View ,Text} from 'react-native';
+import { View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -14,14 +14,10 @@ import Stages from './HomeTabs/Stages';
 import StagesPostuler from './HomeTabs/StagesPostuler';
 import Resultats from './HomeTabs/Resultats';
 import Favorites from './HomeTabs/Favorites'
-import { useFavorites } from './HomeTabs/Partials/FavoritesContext';
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 const HomeTabs = () => {
-
-  const { favoritesCount } = useFavorites();
-
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -47,32 +43,7 @@ const HomeTabs = () => {
             default:
               iconName = 'question';
           }
-
-       /*    return <Icon name={iconName} size={size} color={color} />;
- */
-       return (
-        <View>
-          <Icon name={iconName} size={size} color={color} />
-          {route.name === 'Favorites' && favoritesCount > 0 && (
-            <View style={{
-              position: 'absolute',
-              right: -6,
-              top: -3,
-              backgroundColor: 'red',
-              borderRadius: 7,
-              width: 14,
-              height: 14,
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-              <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>
-                {favoritesCount}
-              </Text>
-            </View>
-          )}
-        </View>
-      );
-
+          return <Icon name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: '#007bff',
         tabBarInactiveTintColor: 'gray',

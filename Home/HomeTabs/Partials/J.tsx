@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Platform, TextInput, Animated, ScrollView } from 'react-native';
+import React, { useState, useEffect, useMemo ,useCallback } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Platform, TextInput,Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import Collapsible from 'react-native-collapsible';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 const Divider = () => <View style={styles.divider} />;
 
@@ -27,7 +26,24 @@ const JobCard = React.memo(({ job, onToggleFavorite }) => {
     checkFavoriteStatus();
   }, [job.id]);
 
-
+ /*  const toggleFavorite = useCallback(async () => {
+    try {
+      const favoriteJobs = await AsyncStorage.getItem('favoriteJobs');
+      let favorites = favoriteJobs ? JSON.parse(favoriteJobs) : [];
+      
+      if (isFavorite) {
+        favorites = favorites.filter(id => id !== job.id);
+      } else {
+        favorites.push(job.id);
+      }
+      
+      await AsyncStorage.setItem('favoriteJobs', JSON.stringify(favorites));
+      setIsFavorite(!isFavorite);
+      onToggleFavorite(job, !isFavorite);
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  }, [isFavorite, job, onToggleFavorite]); */
   
   const toggleFavorite = useCallback(async () => {
     try {
@@ -81,8 +97,8 @@ const JobCard = React.memo(({ job, onToggleFavorite }) => {
   );
 });
 
+
 const JobListings = ({ data }) => {
-  // ... (Keep all the existing state and effect hooks)
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState(data);
   const [sortOrder, setSortOrder] = useState('newest'); // 'newest' or 'oldest'
@@ -104,7 +120,7 @@ const JobListings = ({ data }) => {
     };
     loadFavoriteJobs();
   }, [data]);
-  
+
   const handleToggleFavorite = useCallback((job, isFavorite) => {
     setFavoriteJobs(prevFavorites => 
       isFavorite
@@ -123,7 +139,9 @@ const JobListings = ({ data }) => {
       job.Address.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.State.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.Experience.toLowerCase().includes(searchTerm.toLowerCase()) 
-    ); // Sort the filtered data
+    );
+  
+    // Sort the filtered data
     const sorted = [...filtered].sort((a, b) => {
       if (sortOrder === 'newest') {
         return new Date(b.createdAt) - new Date(a.createdAt);
@@ -135,7 +153,7 @@ const JobListings = ({ data }) => {
     setFilteredData(sorted);
   }, [searchTerm, data, sortOrder]);
 
-  
+
   const FilterTab = ({ sortOrder, onSortChange }) => {
     const [expanded, setExpanded] = useState(false);
     const [animation] = useState(new Animated.Value(0));
@@ -190,8 +208,9 @@ const JobListings = ({ data }) => {
       </View>
     );
   };
-
   
+
+
   const groupedData = useMemo(() => {
     if (!Array.isArray(filteredData) || filteredData.length === 0) return [];
     
@@ -220,21 +239,6 @@ const JobListings = ({ data }) => {
     );
   }
 
-
-  const renderJobList = useCallback(([domain, jobs]) => (
-    <View style={styles.domaineContainer} key={domain}>
-      <Text style={styles.domaineTitle}>{domain}</Text>
-      <FlatList
-        data={jobs}
-        renderItem={({ item }) => <JobCard job={item} onToggleFavorite={handleToggleFavorite} />}
-        keyExtractor={(item) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
-      <Divider />
-    </View>
-  ), [handleToggleFavorite]);
-
   return (
     <View style={styles.container}>
       <TextInput
@@ -249,17 +253,31 @@ const JobListings = ({ data }) => {
           <Text style={styles.notFoundText}>"{searchTerm}" not found</Text>
         </View>
       ) : (
-        <ScrollView>
-          {searchTerm
-            ? filteredData.map(item => <JobCard key={item.id} job={item} onToggleFavorite={handleToggleFavorite} />)
-            : groupedData.map(renderJobList)
-          }
-        </ScrollView>
+        <FlatList
+        data={searchTerm ? filteredData : groupedData}
+        renderItem={searchTerm ? 
+          ({ item }) => <JobCard job={item} onToggleFavorite={handleToggleFavorite} /> :
+          ({ item: [domain, jobs] }) => (
+            <View style={styles.domaineContainer}>
+              <Text style={styles.domaineTitle}>{domain}</Text>
+              <FlatList
+                data={jobs}
+                renderItem={({ item }) => <JobCard job={item} onToggleFavorite={handleToggleFavorite} />}
+                keyExtractor={(item) => item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              
+              />
+              <Divider />
+            </View>
+          )
+        }
+        keyExtractor={searchTerm ? (item) => item.id : ([domain]) => domain}
+      />
       )}
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

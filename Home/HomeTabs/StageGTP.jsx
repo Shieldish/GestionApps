@@ -19,6 +19,7 @@ const Stages = () => {
   const [searchError, setSearchError] = useState(false);
   const navigation = useNavigation();
   const isFetching = useRef(false);
+  const [getDate ,setDate]=useState([])
 
   useEffect(() => {
     fetchStages();
@@ -44,7 +45,7 @@ const Stages = () => {
           ...filters,
         }
       });
-
+      console.log("response.data.stages",response.data.stages)
       setStages(response.data.stages);
       setPagination({
         currentPage: response.data.pagination.currentPage,
@@ -101,38 +102,58 @@ const Stages = () => {
     }
   };
 
+  const getTimeSinceCreated = (createdAt) => {
+    const now = new Date();
+    const diffMs = now.getTime() - createdAt.getTime();
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+  
+    if (diffSeconds < 60) {
+      return `il y a ${diffSeconds} secondes`;
+    } else if (diffMinutes < 60) {
+      return `il y a ${diffMinutes} minutes`;
+    } else if (diffHours < 24) {
+      return `il y a ${diffHours} heures`;
+    } else {
+      return `il y a ${diffDays} jours`;
+    }
+  };
+
   const renderStageItem = ({ item, index }) => (
     <View style={styles.card}>
       <Text style={styles.jobTitle}>{item.Nom} - {item.Domaine}</Text>
-      <Text style={styles.jobDate}>Il y a 1 mois</Text>
+      <Text style={styles.jobDate}>{getTimeSinceCreated(new Date(item.createdAt))}</Text>
       <View style={styles.hrLine} />
 
       <View style={styles.detailContainer}>
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Postes vacants:</Text>
-          <Text style={styles.detailText}>1 poste ouvert</Text>
+          <Text style={styles.detailText}>{item.PostesVacants}</Text>
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Type d'emploi désiré:</Text>
-          <Text style={styles.detailText}>CDI, Contrat al Karama, SIVP</Text>
+          <Text style={styles.detailText}>{item.Libelle}</Text>
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Experience:</Text>
-          <Text style={styles.detailText}>0 à 1 an</Text>
+          <Text style={styles.detailText}>{item.Experience}</Text>
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Niveau d'étude:</Text>
-          <Text style={styles.detailText}>Licence, Bac + 3</Text>
+          <Text style={styles.detailText}>{item.Niveau}</Text>
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Langue:</Text>
-          <Text style={styles.detailText}>Français, Anglais</Text>
+          <Text style={styles.detailText}>{item.Langue}</Text>
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Genre:</Text>
           <Text style={styles.detailText}>Indifférent</Text>
         </View>
       </View>
+      <View style={styles.hrLine} />
 
       <View style={styles.descriptionContainer}>
         <Text style={styles.descriptionTitle}>Description de l'emploi</Text>
@@ -242,7 +263,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     padding: 16,
     elevation: 3,
-    borderWidth: 0.5,
+    borderWidth: 0,
   },
   jobTitle: {
     fontSize: 24,
@@ -264,6 +285,8 @@ const styles = StyleSheet.create({
   },
   detailContainer: {
     marginBottom: 16,
+    padding:10,
+    backgroundColor:"#ccc"
   },
   detailRow: {
     flexDirection: 'row',

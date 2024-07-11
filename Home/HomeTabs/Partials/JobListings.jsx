@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 5,
     borderColor: 'grey ',
-    borderWidth: 1,
+    borderWidth: 0.5,
   },
   cardTitle: {
     fontSize: 22,

@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   errorContainer: {
-    flex: 1,
+    margin:16,
     padding: 16,
     backgroundColor: 'pink',
     borderRadius: 5,

@@ -40,7 +40,7 @@ const Stages = () => {
         params: {
           search: search.trim(),
           page: pagination.currentPage.toString(),
-          limit: '10',
+          limit: '5',
           ...filters,
         }
       });
@@ -102,11 +102,33 @@ const Stages = () => {
     }
   };
 
+  
+  const getTimeSinceCreated = (createdAt) => {
+    const now = new Date();
+    const diffMs = now.getTime() - createdAt.getTime();
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+  
+    if (diffSeconds < 60) {
+      return `il y a ${diffSeconds} secondes`;
+    } else if (diffMinutes < 60) {
+      return `il y a ${diffMinutes} minutes`;
+    } else if (diffHours < 24) {
+      return `il y a ${diffHours} heures`;
+    } else {
+      return `il y a ${diffDays} jours`;
+    }
+  };
+
+
   const renderStageItem = ({ item }) => (
     <View style={styles.card}>
       <Text style={styles.jobTitle}>{item.Nom} - {item.Domaine}</Text>
       <Text style={styles.companyLocation}>{item.Address}</Text>
-      <Text style={styles.postedDate}>Il y a {/* Calculate time difference */} jours</Text>
+      <Text style={styles.postedDate}>Il y a {getTimeSinceCreated(new Date(item.createdAt))}</Text>
+      <View style={styles.hrLine} />
   
       <View style={styles.infoGrid}>
         <InfoItem label="Postes vacants:" value="1 poste ouvert" />
@@ -116,7 +138,8 @@ const Stages = () => {
         <InfoItem label="Langue :" value={item.Langue} />
         <InfoItem label="Genre :" value="Indifférent" />
       </View>
-  
+      <View style={styles.hrLine} />
+
       <View style={styles.descriptionSection}>
         <Text style={styles.sectionTitle}>Description de l'emploi</Text>
         <Text style={styles.descriptionText}>{item.Description}</Text>
@@ -279,8 +302,10 @@ const styles = StyleSheet.create({
     alignItems:"center"
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
+    color: '#007bff',
+   
   },
   footer: {
     marginTop: 20,
@@ -306,21 +331,27 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   paginationButton: {
-    paddingHorizontal: 16,
+    backgroundColor: 'grey',
+    paddingHorizontal: 12,
     paddingVertical: 8,
+    borderRadius: 8,
+    marginHorizontal: 8,
+    marginBottom:10,
   },
   paginationButtonText: {
-    fontSize: 18,
-    color: '#007bff',
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   paginationText: {
-    fontSize: 18,
-    marginHorizontal: 20,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 
   jobTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
+   
     color: '#333',
     marginBottom: 4,
   },

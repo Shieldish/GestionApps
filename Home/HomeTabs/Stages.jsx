@@ -28,11 +28,11 @@ const Stages = () => {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem('userToken');
-
+  
       if (!token) {
         throw new Error('No authentication token found');
       }
-
+  
       const response = await axios.get(`${process.env.BACKEND_URL}/etudiant/All`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -40,10 +40,11 @@ const Stages = () => {
         params: {
           search: search.trim(),
           page: pagination.currentPage.toString(),
-          limit: '10',
+          limit: '5',
           ...filters,
         }
       });
+        //   console.log(response.data.stages)   
 
       setStages(response.data.stages);
       setPagination({
@@ -51,13 +52,13 @@ const Stages = () => {
         totalPages: response.data.pagination.totalPages,
         totalItems: response.data.pagination.totalItems,
       });
-
+  
       setSearchError(response.data.stages.length === 0);
-
+  
     } catch (error) {
       console.error('Error fetching stages:', error);
       let errorMessage = 'An error occurred while fetching the stages.';
-
+  
       if (error.response) {
         if (error.response.status === 401) {
           errorMessage = 'Authentication failed. Please log in again.';
@@ -67,7 +68,7 @@ const Stages = () => {
       } else if (error.request) {
         errorMessage = 'No response from the server. Please check your internet connection.';
       }
-
+  
       Alert.alert(
         'Error Fetching Data',
         errorMessage,
@@ -101,56 +102,62 @@ const Stages = () => {
     }
   };
 
-  const renderStageItem = ({ item, index }) => (
+  
+  const getTimeSinceCreated = (createdAt) => {
+    const now = new Date();
+    const diffMs = now.getTime() - createdAt.getTime();
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+  
+    if (diffSeconds < 60) {
+      return `il y a ${diffSeconds} secondes`;
+    } else if (diffMinutes < 60) {
+      return `il y a ${diffMinutes} minutes`;
+    } else if (diffHours < 24) {
+      return `il y a ${diffHours} heures`;
+    } else {
+      return `il y a ${diffDays} jours`;
+    }
+  };
+
+
+  const renderStageItem = ({ item }) => (
     <View style={styles.card}>
       <Text style={styles.jobTitle}>{item.Nom} - {item.Domaine}</Text>
-      <Text style={styles.jobDate}>Il y a 1 mois</Text>
+      <Text style={styles.companyLocation}>{item.Address}</Text>
+      <Text style={styles.postedDate}>Il y a {getTimeSinceCreated(new Date(item.createdAt))}</Text>
+      <View style={styles.hrLine} />
+  
+      <View style={styles.infoGrid}>
+        <InfoItem label="Postes vacants:" value="1 poste ouvert" />
+        <InfoItem label="Type d'emploi désiré :" value={`${item.Libelle}`} />
+        <InfoItem label="Experience :" value={item.Experience} />
+        <InfoItem label="Niveau d'étude :" value={item.Niveau} />
+        <InfoItem label="Langue :" value={item.Langue} />
+        <InfoItem label="Genre :" value="Indifférent" />
+      </View>
       <View style={styles.hrLine} />
 
-      <View style={styles.detailContainer}>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Postes vacants:</Text>
-          <Text style={styles.detailText}>1 poste ouvert</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Type d'emploi désiré:</Text>
-          <Text style={styles.detailText}>CDI, Contrat al Karama, SIVP</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Experience:</Text>
-          <Text style={styles.detailText}>0 à 1 an</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Niveau d'étude:</Text>
-          <Text style={styles.detailText}>Licence, Bac + 3</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Langue:</Text>
-          <Text style={styles.detailText}>Français, Anglais</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Genre:</Text>
-          <Text style={styles.detailText}>Indifférent</Text>
-        </View>
-      </View>
-
-      <View style={styles.descriptionContainer}>
-        <Text style={styles.descriptionTitle}>Description de l'emploi</Text>
+      <View style={styles.descriptionSection}>
+        <Text style={styles.sectionTitle}>Description de l'emploi</Text>
         <Text style={styles.descriptionText}>{item.Description}</Text>
       </View>
-
-      <View style={styles.requirementsContainer}>
-        <Text style={styles.requirementsTitle}>Exigences de l'emploi</Text>
-        <Text style={styles.requirementsText}>Responsabilités</Text>
-        <Text style={styles.requirementsText}>{item.Libelle}</Text>
-      </View>
-
+  
       <TouchableOpacity
         style={styles.postulateButton}
         onPress={() => navigation.navigate('Postulation', { stage: item })}
       >
         <Text style={styles.postulateButtonText}>Postuler</Text>
       </TouchableOpacity>
+    </View>
+  );
+  
+  const InfoItem = ({ label, value }) => (
+    <View style={styles.infoItem}>
+      <Text style={styles.infoLabel}>{label}</Text>
+      <Text style={styles.infoValue}>{value}</Text>
     </View>
   );
 
@@ -196,7 +203,7 @@ const Stages = () => {
             refreshing={refreshing}
             onRefresh={handleRefresh}
             contentContainerStyle={{ paddingBottom: 20 }}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={false} // Add this line
           />
         )
       )}
@@ -227,6 +234,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 20,
+   
   },
   searchInput: {
     height: 40,
@@ -237,93 +245,98 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
     borderRadius: 8,
-    marginBottom: 12,
+    marginBottom: 16,
     padding: 16,
-    elevation: 3,
-    borderWidth: 0.5,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
   },
-  jobTitle: {
+  cardBody: {
+    flex: 1,
+  },
+  jobCompany: {
     fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#007bff',
-    marginBottom: 8,
-  },
-  jobDate: {
-    fontSize: 12,
-    color: '#888',
-    textAlign: 'center',
-    marginBottom: 16,
+    margin: 30,
+    textAlign:"center",
+    textTransform:"uppercase",
+    color:"#007bff",
+    fontStyle:"bold"
   },
   hrLine: {
-    borderBottomColor: '#ddd',
-    borderBottomWidth: 1,
-    marginBottom: 16,
+    borderBottomColor: 'black',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginBottom: 12,
   },
   detailContainer: {
-    marginBottom: 16,
+    marginBottom: 12,
   },
   detailRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  detailLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    alignItems: 'center',
+    marginBottom: 6,
   },
   detailText: {
-    fontSize: 16,
+    marginLeft: 8,
+    fontSize: 14,
   },
-  descriptionContainer: {
-    marginBottom: 16,
-  },
-  descriptionTitle: {
-    fontSize: 18,
+  boldText: {
     fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  descriptionText: {
-    fontSize: 16,
-    textAlign: 'justify',
-  },
-  requirementsContainer: {
-    marginBottom: 16,
-  },
-  requirementsTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  requirementsText: {
-    fontSize: 16,
-    textAlign: 'justify',
   },
   postulateButton: {
-    backgroundColor: '#007bff',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
+    backgroundColor: '#192f6a',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    alignSelf: 'flex-end',
+    marginTop: 10,
   },
   postulateButtonText: {
     color: '#fff',
-    fontSize: 18,
     fontWeight: 'bold',
+  },
+  header: {
+    marginBottom: 12,
+    alignItems:"center"
+  },
+  headerText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#007bff',
+   
+  },
+  footer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  footerText: {
+    fontSize: 12,
+    color: '#888',
+  },
+  emptySearchContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  emptySearchText: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: '#888',
   },
   paginationContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 12,
+    marginTop: 20,
   },
   paginationButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: 'grey',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 8,
     marginHorizontal: 8,
+    marginBottom:10,
   },
   paginationButtonText: {
     color: '#fff',
@@ -334,32 +347,63 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  header: {
-    paddingVertical: 12,
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  headerText: {
+
+  jobTitle: {
     fontSize: 24,
     fontWeight: 'bold',
+   
+    color: '#333',
+    marginBottom: 4,
   },
-  footer: {
-    paddingVertical: 12,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  footerText: {
+  companyLocation: {
     fontSize: 16,
+    color: '#666',
+    marginBottom: 2,
+  },
+  postedDate: {
+    fontSize: 14,
+    color: '#999',
+    marginBottom: 16,
+  },
+  infoGrid: {
+    backgroundColor: '#F5F5F5',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  infoLabel: {
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  infoValue: {
+    color: '#666',
+  },
+  descriptionSection: {
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  descriptionText: {
+    color: '#666',
+    lineHeight: 20,
+  },
+
+  postulateButtonText: {
+    color: '#FFF',
     fontWeight: 'bold',
   },
-  emptySearchContainer: {
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  emptySearchText: {
-    fontSize: 18,
-    color: '#888',
-  },
+
+
+  
 });
 
 export default Stages;

@@ -133,6 +133,7 @@ const PostulantList = () => {
           <Text style={styles.cardTitle}>
             <Icon name="work" size={18} color="blue" /> {item.stageDomaine} : {item.entrepriseName}
           </Text>
+          <View style={styles.hrLine} />
           <Text>
             <Text style={styles.bold}><Icon name="person" size={16} /> Nom et Prenom:</Text> {item.etudiantName}
           </Text>
@@ -229,14 +230,15 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 16,
-    backgroundColor: '#ccc',
+    backgroundColor: '#fff',
   },
   title: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
     textTransform: 'uppercase',
     marginBottom: 16,
+    color: '#007bff',
   },
   errorContainer: {
     padding: 16,
@@ -273,6 +275,11 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginBottom: 10,
     color: 'navy',
+  }, 
+   hrLine: {
+    borderBottomColor: 'black',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginBottom: 12,
   },
   button: {
     marginTop: 10,

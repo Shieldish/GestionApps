@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Animated } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Animated ,Image} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { BACKEND_URL } from '@env';
@@ -88,7 +88,13 @@ const Register = () => {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.contentWrapper, { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }]}>
-        <Text style={styles.title}>Register</Text>
+
+      <Image
+          source={require('../assets/favicon.png')} // Change this to the path of your image
+          style={styles.headerImage}
+          resizeMode="contain"
+        />
+        <Text style={styles.title}>REGISTER</Text>
 
         {errorMessage ? (
           <View style={styles.errorCard}>
@@ -185,18 +191,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e3f2fd',
+    backgroundColor: '#fff',
   },
   contentWrapper: {
     width: '80%',
     padding: 20,
     backgroundColor: 'white',
-    borderRadius: 10,
+   /*  borderRadius: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 5 },
     shadowRadius: 10,
-    elevation: 5,
+    borderWidth:1,
+    borderColor: 'grey',
+    elevation: 5, */
+  },
+  headerImage: {
+    width: '100%',
+    height: 150,
+    marginBottom: 20,
   },
   title: {
     fontSize: 28,

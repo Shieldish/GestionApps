@@ -264,7 +264,7 @@ const JobListings = ({ data }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fff',
   },
   searchInput: {
     height: 40,
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     color: '#cccaaa',
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 20,
     marginHorizontal: 10,
@@ -309,13 +309,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
-    borderColor: 'white',
+    borderColor: 'grey ',
     borderWidth: 1,
   },
   cardTitle: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
+    marginTop:20,
     color: '#2c3e50',
     textAlign:'center',
     textTransform:'uppercase',

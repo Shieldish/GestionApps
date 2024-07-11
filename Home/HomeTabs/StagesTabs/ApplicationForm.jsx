@@ -195,7 +195,7 @@ const ApplicationForm = ({ route, navigation }) => {
         },
       });
 
-      console.log('Form submitted successfully:', response.data);
+      console.log('Form submitted successfully:',);
       Alert.alert('Formulaire soumis', 'Votre candidature a été soumise avec succès.', [
         { text: 'OK', onPress: () => navigateToAnotherComponent() }
       ]);
@@ -256,7 +256,7 @@ const ApplicationForm = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    console.log('Updated formData:', formData);
+   // console.log('Updated formData:', formData);
   }, [formData]);
   
    const handleFilePicker = async (fileType) => {
@@ -267,7 +267,7 @@ const ApplicationForm = ({ route, navigation }) => {
         allowMultiSelection: false,
       });
       const file = res.assets[0];
-      console.log(fileType, file);
+    //  console.log(fileType, file);
       if (file) {
         setFormData(prevState => ({
           ...prevState,

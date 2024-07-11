@@ -28,7 +28,7 @@ const Favorites = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("response.data.exists;",response.data.exists)
+     
       return response.data.exists;
     } catch (error) {
       console.error('Error checking applied status:', error);
@@ -96,7 +96,7 @@ const Favorites = () => {
           // Check applied status for each job
           const Data = await AsyncStorage.getItem('userData');
           const data = JSON.parse(Data);
-          console.log("Data =", data.userData.EMAIL)
+        //  console.log("Data =", data.userData.EMAIL)
           const email = data.userData.EMAIL;
           SetEmail(email)
           const appliedStatus = {};
@@ -179,7 +179,9 @@ const Favorites = () => {
         
       <Text style={styles.cardTitle}>{job.Titre}</Text>
       <Text style={styles.cardSubtitle}>{job.Libelle}</Text>
+      <Divider />
       <Text style={styles.cardInfo2}>{job.Nom} - {job.Address}</Text>
+      <Divider />
       <Text style={styles.cardInfo}><Text style={styles.bold}>Experience:</Text> {job.Experience}</Text>
       <Text style={styles.cardInfo}><Text style={styles.bold}>Niveau:</Text> {job.Niveau}</Text>
       <Text style={styles.cardInfo}><Text style={styles.bold}>Postes Vacants:</Text> {job.PostesVacants}</Text>
@@ -257,7 +259,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   jobContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
     padding: 10,
     marginBottom: 10,
     borderRadius: 5,
@@ -271,6 +273,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
+    marginTop:30,
     color: '#2c3e50',
     textAlign: 'center',
     textTransform: 'uppercase',
@@ -289,10 +292,11 @@ const styles = StyleSheet.create({
   },
   cardInfo2: {
     fontSize: 16,
-    marginBottom: 8,
+    margin:10,
     color: '#007bff',
     fontWeight: 'bold',
     textTransform: 'uppercase',
+    textAlign:'center'
   },
   cardInfo3: {
     fontSize: 14,
@@ -365,7 +369,7 @@ const styles = StyleSheet.create({
   },
   appliedJobContainer: {
     borderColor: 'black',
-    backgroundColor :'beige'
+    backgroundColor :'#FFFAF0'
   },
 /*   appliedText: {
     color: 'red',

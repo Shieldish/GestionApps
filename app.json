@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "GestionApps",
+    "name": "Stages",
     "slug": "GestionApps",
     "version": "1.0.0",
     "orientation": "default",
@@ -29,6 +29,9 @@
       "eas": {
         "projectId": "855597ad-d672-43ad-a59b-fdb83746bf28"
       }
-    }
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }

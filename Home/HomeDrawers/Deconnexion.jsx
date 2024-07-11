@@ -1,97 +1,4 @@
-/* // LogoutBottomSheet.js (./HomeDrawers/Deconnexion.js)
-import React, { useCallback, useMemo, forwardRef, useImperativeHandle, useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
-import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import { useNavigation } from '@react-navigation/native';
-import { logout } from '../../authService'; // Adjust the import path as needed
 
-const LogoutBottomSheet = forwardRef((props, ref) => {
-  const navigation = useNavigation();
-  const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ['25%'], []);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useImperativeHandle(ref, () => ({
-    present: () => bottomSheetModalRef.current?.present(),
-  }));
-
-  const handleCloseModal = useCallback(() => {
-    bottomSheetModalRef.current?.dismiss();
-  }, []);
-
-  const handleLogout = useCallback(async () => {
-    setIsLoading(true);
-    await logout(navigation);
-    setIsLoading(false);
-    handleCloseModal();
-  }, [navigation]);
-
-  const renderBackdrop = useCallback(
-    props => <BottomSheetBackdrop {...props} pressBehavior="close" />,
-    []
-  );
-
-  return (
-    <BottomSheetModal
-      ref={bottomSheetModalRef}
-      index={0}
-      snapPoints={snapPoints}
-      backdropComponent={renderBackdrop}
-    >
-      <View style={styles.contentContainer}>
-        <Text style={styles.title}>Voulez-vous vous déconnecter ?</Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={handleCloseModal} style={styles.button}>
-            <Text style={styles.buttonText}>Annuler</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleLogout} style={[styles.button, styles.logoutButton]}>
-            {isLoading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={[styles.buttonText, styles.logoutButtonText]}>Déconnecter</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
-    </BottomSheetModal>
-  );
-});
-
-const styles = StyleSheet.create({
-  contentContainer: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-  },
-  button: {
-    padding: 10,
-    borderRadius: 5,
-    minWidth: 100,
-    alignItems: 'center',
-  },
-  buttonText: {
-    fontSize: 16,
-  },
-  logoutButton: {
-    backgroundColor: '#007bff',
-  },
-  logoutButtonText: {
-    color: '#fff',
-  },
-});
-
-
-export default LogoutBottomSheet; */
 
 
 import React, { useCallback, useMemo, forwardRef, useImperativeHandle, useState, useRef } from 'react';
@@ -134,7 +41,7 @@ const LogoutBottomSheet = forwardRef((props, ref) => {
       backdropComponent={renderBackdrop}
     >
       <View style={styles.contentContainer}>
-        <Text style={styles.title}>Voulez-vous vous déconnecter ?</Text>
+        <Text style={styles.title}>Voulez-vous- déconnecter ?</Text>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={handleCloseModal} style={styles.button}>
             <Text style={styles.buttonText}>Annuler</Text>

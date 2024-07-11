@@ -9,7 +9,7 @@ import LoginScreen from './connection/Login';
 import RegistrationScreen from './connection/Registration';
 import ForgetPasswordScreen from './connection/ForgetPassword';
 import RegistrationSuccessMessages from './connection/RegistrationSuccessMessages';
-import HomePage from './Home/HomePage';
+import HomePage from './Home/HomeDrawers';
 import Postulation from './Home/HomeTabs/StagesTabs/Postulation';
 import ApplicationForm from './Home/HomeTabs/StagesTabs/ApplicationForm';
 import StagesPostuler from './Home/HomeTabs/StagesPostuler';

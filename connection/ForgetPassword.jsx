@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     minWidth: 100,
   },
   secondaryButton: {
-    backgroundColor: '#ddd',
+    backgroundColor: '#666',
   },
   primaryButton: {
     backgroundColor: '#007bff',

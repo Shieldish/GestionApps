@@ -197,7 +197,7 @@ const Stages = () => {
       {loading && !refreshing ? (
         <ActivityIndicator size="large" color="#007bff" />
       ) : (
-        stages.length === 0 ? (
+        !stages ? (
           searchError ? renderEmptySearch() : null
         ) : (
           <FlatList

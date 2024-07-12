@@ -309,8 +309,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
-    borderColor: 'grey ',
-    borderWidth: 0.5,
+    borderColor: '#007bff',
+    borderWidth: 1,
   },
   cardTitle: {
     fontSize: 22,

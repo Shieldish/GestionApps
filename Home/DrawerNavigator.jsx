@@ -60,11 +60,11 @@ const CustomDrawerContent = (props) => {
       </SafeAreaView>
       <DrawerItemList {...props} />
       <View style={styles.bottomDrawerSection}>
-        <DrawerItem
+     {/*    <DrawerItem
           label="About"
           onPress={() => props.navigation.navigate('About')}
           icon={({ color, size }) => <Icon name="info-circle" color={color} size={size} />}
-        />
+        /> */}
         <DrawerItem
           label="Logout"
           onPress={props.handleLogoutPress}
@@ -104,7 +104,7 @@ const DrawerNavigator = ({ handleLogoutPress }) => {
           }
           return <Icon name={iconName} size={size} color={color} />;
         },
-        drawerActiveTintColor: '#0255db',
+        drawerActiveTintColor: '#007bff',
         drawerInactiveTintColor: 'grey',
         drawerStyle: {
           backgroundColor: '#f5f5f5',
@@ -135,11 +135,11 @@ const DrawerNavigator = ({ handleLogoutPress }) => {
         component={Settings}
         options={{ drawerLabel: 'Settings', headerTitle: 'Settings' }}
       />
-      <Drawer.Screen
+       <Drawer.Screen
         name="About"
         component={About}
         options={{ drawerLabel: 'About', headerTitle: 'About' }}
-      />
+      /> 
     </Drawer.Navigator>
   );
 };

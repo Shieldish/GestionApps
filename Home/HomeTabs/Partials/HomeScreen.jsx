@@ -76,7 +76,7 @@ const App = () => {
           <View style={styles.errorContainer}>
             <Text style={styles.errorText}>{error}</Text>
           </View>
-        ) : jobData.length === 0 ? (
+        ) : !jobData ? (
           <View style={styles.noDataContainer}>
             <Text style={styles.noDataText}>No job listings available.</Text>
           </View>

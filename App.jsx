@@ -1,4 +1,4 @@
-// App.js
+// App.jsx
 import 'react-native-gesture-handler';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { View, ActivityIndicator, Button } from 'react-native';

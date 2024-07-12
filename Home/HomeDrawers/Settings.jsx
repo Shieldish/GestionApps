@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import CheckBox from 'react-native-check-box'
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -23,6 +24,7 @@ const ProfileEditScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -63,7 +65,7 @@ const ProfileEditScreen = () => {
     let errors = {};
 
     // Check for empty required fields
-    const requiredFields = ['NOM', 'PRENOM', 'DEPARTEMENT', 'ADDRESS', 'DATE'];
+    const requiredFields = ['NOM', 'PRENOM', 'DEPARTEMENT', 'ADDRESS', 'DATE','PASSWORD','PASSWORD2'];
     requiredFields.forEach(field => {
       if (!userData[field]) {
         errors[field] = `${field} is required`;
@@ -88,7 +90,10 @@ const ProfileEditScreen = () => {
   };
 
   const handleSubmit = async () => {
-    if (!validateForm()) {
+    if (!validateForm() || !isCheckboxChecked) {
+      if (!isCheckboxChecked) {
+        setErrors(prevErrors => ({ ...prevErrors, checkbox: 'You must agree to the terms and conditions' }));
+      }
       return;
     }
 
@@ -242,6 +247,15 @@ const ProfileEditScreen = () => {
         </View>
         {errors.PASSWORD2 && <Text style={styles.error}>{errors.PASSWORD2}</Text>}
       </View>
+    
+<View style={styles.formRow}>
+  <CheckBox
+    isChecked={isCheckboxChecked}
+    onClick={() => setIsCheckboxChecked(!isCheckboxChecked)}
+  />
+  <Text style={styles.label}>I agree to the terms and conditions</Text>
+  {errors.checkbox && <Text style={styles.error}>{errors.checkbox}</Text>}
+</View>
       <View style={styles.buttonContainer}>
         <Button title="Update Profile" onPress={handleSubmit} />
       </View>

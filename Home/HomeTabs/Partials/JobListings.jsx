@@ -8,7 +8,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Divider = () => <View style={styles.divider} />;
 
-const JobCard = React.memo(({ job, onToggleFavorite }) => {
+const JobCard = React.memo(({ job, 
+  
+  
+  
+  
+  
+  onToggleFavorite }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const navigation = useNavigation();
 

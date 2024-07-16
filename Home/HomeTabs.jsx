@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Home from './HomeTabs/Partials/HomeScreen';
+import Home from './HomeScreen';
 import Stages from './HomeTabs/Stages';
 import StagesPostuler from './HomeTabs/Candidatures';
 import Resultats from './HomeTabs/Resultats';

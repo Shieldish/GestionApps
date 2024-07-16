@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, RefreshControl, ScrollView, View, Text } from 'react-native';
-import JobListings from './JobListings';
+import JobListings from './HomeTabs/Partials/JobListings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ContentLoader, { Rect } from 'react-content-loader/native';
 import axios from 'axios';

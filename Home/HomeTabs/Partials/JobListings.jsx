@@ -10,10 +10,6 @@ const Divider = () => <View style={styles.divider} />;
 
 const JobCard = React.memo(({ job, 
   
-  
-  
-  
-  
   onToggleFavorite }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const navigation = useNavigation();

@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-
 const Stages = () => {
   const [stages, setStages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -127,12 +126,7 @@ const Stages = () => {
   const renderStageItem = ({ item }) => (
     <View style={styles.card}>
       <Text style={styles.jobTitle}>{item.Nom} - {item.Domaine}</Text>
-     {/*  <Text style={styles.companyLocation}>{item.Address}</Text> */}
-      <Text style={styles.companyName}>{item.CompanyName}</Text>
-      <View style={styles.locationContainer}>
-        <Icon name="map-marker" size={20} color="#000" />
-        <Text style={styles.companyLocation}>{item.Address}</Text>
-      </View>
+      <Text style={styles.companyLocation}>{item.Address}</Text>
       <Text style={styles.postedDate}>Il y a {getTimeSinceCreated(new Date(item.createdAt))}</Text>
       <View style={styles.hrLine} />
   
@@ -197,7 +191,7 @@ const Stages = () => {
       {loading && !refreshing ? (
         <ActivityIndicator size="large" color="#007bff" />
       ) : (
-        !stages ? (
+        stages.length === 0 ? (
           searchError ? renderEmptySearch() : null
         ) : (
           <FlatList
@@ -286,7 +280,7 @@ const styles = StyleSheet.create({
   },
   detailText: {
     marginLeft: 8,
-    fontSize: 18,
+    fontSize: 14,
   },
   boldText: {
     fontWeight: 'bold',
@@ -408,14 +402,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  companyLocation: {
-    marginLeft: 5, // Add some space between the icon and the text
-    // Your styles here
-  },
+
   
 });
 

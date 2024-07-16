@@ -83,8 +83,7 @@ const DrawerNavigator = ({ handleLogoutPress }) => {
         headerShown: true,
         headerTitleAlign: 'center',
         drawerLabelStyle: {
-          fontSize: 18,
-          fontWeight: 'bold',
+         
           color: '#333',
         },
         drawerIcon: ({ color, size }) => {
@@ -104,7 +103,7 @@ const DrawerNavigator = ({ handleLogoutPress }) => {
           }
           return <Icon name={iconName} size={size} color={color} />;
         },
-        drawerActiveTintColor: '#007bff',
+        drawerActiveTintColor: 'black',
         drawerInactiveTintColor: 'grey',
         drawerStyle: {
           backgroundColor: '#f5f5f5',

@@ -12,7 +12,7 @@ import RegistrationSuccessMessages from './connection/RegistrationSuccessMessage
 import HomePage from './Home/HomeDrawers';
 import Postulation from './Home/HomeTabs/StagesTabs/Postulation';
 import ApplicationForm from './Home/HomeTabs/StagesTabs/ApplicationForm';
-import StagesPostuler from './Home/HomeTabs/StagesPostuler';
+import StagesPostuler from './Home/HomeTabs/Candidatures';
 import MoreDetails from './Home/HomeTabs/StagesTabs/MoreDetails';
 import Favorites from './Home/HomeTabs/Favorites'
 import { FavoritesProvider } from './Home/HomeTabs/Partials/FavoritesContext';

@@ -2,7 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from './HomeTabs/Partials/HomeScreen';
 import Stages from './HomeTabs/Stages';
-import StagesPostuler from './HomeTabs/StagesPostuler';
+import StagesPostuler from './HomeTabs/Candidatures';
 import Resultats from './HomeTabs/Resultats';
 import Favorites from './HomeTabs/Favorites';
 import TabBarIcon from './TabBarIcon';
@@ -18,8 +18,10 @@ const HomeTabs = () => {
         tabBarIcon: ({ color, size }) => (
           <TabBarIcon route={route} color={color} size={size} />
         ),
-        tabBarActiveTintColor: '#007bff',
-        tabBarInactiveTintColor: 'grey',
+   /*      tabBarActiveTintColor: '#007bff',
+        tabBarInactiveTintColor: 'grey', */
+        tabBarActiveTintColor: 'black',
+        tabBarInactiveTintColor: 'silver',
         tabBarStyle: {
           backgroundColor: '#f5f5f5',
           borderTopColor: '#ccc',

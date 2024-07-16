@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Platform, Animated ,Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Platform, Animated } from 'react-native';
 import CheckBox from 'react-native-check-box';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -115,13 +115,12 @@ const ProfileEditScreen = () => {
       if (response.data.success) {
         // Handle success (e.g., show a success message, navigate to another screen)
         console.log('Profile updated successfully');
-        Alert.alert('Success', 'Profile updated successfully');
       } else {
         // Handle error
-        Alert.alert('Error', 'Failed to update profile');
+        console.error('Failed to update profile');
       }
     } catch (error) {
-      Alert.alert('Error', 'An error occurred while updating the profile');
+      console.error('Failed to update profile:', error);
     }
   };
 
@@ -142,8 +141,7 @@ const ProfileEditScreen = () => {
 
   return (
     <LinearGradient
-      /* colors={['#4c669f', '#3b5998', '#192f6a']} */
-      colors={['#4c669f', '#007bff', '#192f6a']}
+      colors={['#4c669f', '#3b5998', '#192f6a']}
       style={styles.gradientBackground}
     >
       <ScrollView style={styles.container}>
@@ -219,31 +217,10 @@ const ProfileEditScreen = () => {
               style={styles.picker}
               onValueChange={(value) => handleInputChange('ADDRESS', value)}
             >
-               <Picker.Item label="Select a town" value="" />
-  <Picker.Item label="Tunis, Tunisie" value="Tunis, Tunisie" />
-  <Picker.Item label="Ariana, Tunisie" value="Ariana, Tunisie" />
-  <Picker.Item label="Ben Arous, Tunisie" value="Ben Arous, Tunisie" />
-  <Picker.Item label="Manouba, Tunisie" value="Manouba, Tunisie" />
-  <Picker.Item label="Nabeul, Tunisie" value="Nabeul, Tunisie" />
-  <Picker.Item label="Zaghouan, Tunisie" value="Zaghouan, Tunisie" />
-  <Picker.Item label="Bizerte, Tunisie" value="Bizerte, Tunisie" />
-  <Picker.Item label="Béja, Tunisie" value="Béja, Tunisie" />
-  <Picker.Item label="Jendouba, Tunisie" value="Jendouba, Tunisie" />
-  <Picker.Item label="Kef, Tunisie" value="Kef, Tunisie" />
-  <Picker.Item label="Siliana, Tunisie" value="Siliana, Tunisie" />
-  <Picker.Item label="Kairouan, Tunisie" value="Kairouan, Tunisie" />
-  <Picker.Item label="Kasserine, Tunisie" value="Kasserine, Tunisie" />
-  <Picker.Item label="Sidi Bouzid, Tunisie" value="Sidi Bouzid, Tunisie" />
-  <Picker.Item label="Sousse, Tunisie" value="Sousse, Tunisie" />
-  <Picker.Item label="Monastir, Tunisie" value="Monastir, Tunisie" />
-  <Picker.Item label="Mahdia, Tunisie" value="Mahdia, Tunisie" />
-  <Picker.Item label="Sfax, Tunisie" value="Sfax, Tunisie" />
-  <Picker.Item label="Gafsa, Tunisie" value="Gafsa, Tunisie" />
-  <Picker.Item label="Tozeur, Tunisie" value="Tozeur, Tunisie" />
-  <Picker.Item label="Kebili, Tunisie" value="Kebili, Tunisie" />
-  <Picker.Item label="Gabès, Tunisie" value="Gabès, Tunisie" />
-  <Picker.Item label="Medenine, Tunisie" value="Medenine, Tunisie" />
-  <Picker.Item label="Tataouine, Tunisie" value="Tataouine, Tunisie" />
+              <Picker.Item label="Select a town" value="" />
+              <Picker.Item label="Ariana, Tunisie" value="Ariana, Tunisie" />
+              <Picker.Item label="Béja, Tunisie" value="Béja, Tunisie" />
+              <Picker.Item label="Ben Arous, Tunisie" value="Ben Arous, Tunisie" />
             </Picker>
           </View>
           {errors.ADDRESS && <Text style={styles.error}>{errors.ADDRESS}</Text>}
@@ -324,7 +301,6 @@ const ProfileEditScreen = () => {
 const styles = StyleSheet.create({
   gradientBackground: {
     flex: 1,
-    backgroundColor :'#007bff'
   },
   container: {
     flex: 1,

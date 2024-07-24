@@ -48,29 +48,35 @@ const PostulantList = () => {
       setRefreshing(true);
   
       const token = await AsyncStorage.getItem('userToken');
-     
   
-      if (token) {
-        const response = await axios.get(
-          `${process.env.BACKEND_URL}/etudiant/stage_postuler2`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setPostulants(response.data.postulant);
-      } else {
+      if (!token) {
         throw new Error('No token found');
       }
+  
+      const response = await axios.get(
+        `${process.env.BACKEND_URL}/etudiant/stage_postuler2`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      setPostulants(response.data.postulant);
     } catch (error) {
       console.error('Error fetching postulants:', error);
-      setError('Failed to load postulants. Please try again later.');
+  
+      if (error.response && error.response.status === 404) {
+        setError('Vous n\'avez pas de stage postuler');
+      } else {
+        setError(error.message);
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
   };
+  
 
   useEffect(() => {
     fetchPostulants();

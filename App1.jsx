@@ -85,10 +85,11 @@ const ExampleComponentWithLogout = ({ navigation }) => {
   const { setIsLoggedIn } = useAuth();
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.clear();
     setIsLoggedIn(false);
-    navigation.navigate('Login');
+    navigation.replace('OnboardingScreen1');
   };
+  
 
   return (
     <View>

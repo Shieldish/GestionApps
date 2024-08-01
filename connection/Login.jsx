@@ -69,7 +69,21 @@ const Login = () => {
         await AsyncStorage.setItem('userData', JSON.stringify(data.userData));
 
         // Navigate to next screen or handle success
+     
+
+      /*   navigation.replace('HomePage'); */
+
+      // Check if the user has seen the onboarding screens
+      const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+
+      if (hasSeenOnboarding) {
+        // If the user has seen onboarding, navigate to the home page
         navigation.replace('HomePage');
+      } else {
+        // If the user hasn't seen onboarding, navigate to the onboarding screens
+        navigation.replace('Onboarding');
+      }
+
       } else {
         // Handle login failure
         setErrorMessage(data.message || 'Login failed');

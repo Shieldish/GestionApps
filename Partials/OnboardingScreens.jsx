@@ -15,11 +15,11 @@ const OnboardingScreens = () => {
     {
       title: 'Bienvenue',
       content: `Bienvenue dans notre application de gestion de stages. Cette plateforme est conçue pour vous aider à organiser et suivre facilement vos stages, de l'inscription à l'évaluation finale. Grâce à notre application, vous pouvez :
-      ¤ Rechercher et postuler à des offres de stages.
-      ¤ Suivre l'état de vos candidatures en temps réel.
-      ¤ Communiquer avec les superviseurs et les entreprises.
-      ¤ Remplir et soumettre des rapports de stage.
-      ¤ Recevoir des évaluations et des feedbacks.
+      - Rechercher et postuler à des offres de stages.
+      - Suivre l'état de vos candidatures en temps réel.
+      - Communiquer avec les superviseurs et les entreprises.
+      - Remplir et soumettre des rapports de stage.
+      - Recevoir des évaluations et des feedbacks.
       
       Que vous soyez étudiant, stagiaire ou recruteur, notre application est là pour simplifier et améliorer votre expérience de gestion des stages. Profitez de toutes les fonctionnalités pour une gestion efficace et sans tracas de vos stages.`,
       image: require('../assets/graduation/970.png'),

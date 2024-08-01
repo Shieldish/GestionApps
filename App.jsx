@@ -15,8 +15,8 @@ import ApplicationForm from './Home/HomeTabs/StagesTabs/ApplicationForm';
 import StagesPostuler from './Home/HomeTabs/Candidatures';
 import MoreDetails from './Home/HomeTabs/StagesTabs/MoreDetails';
 import Favorites from './Home/HomeTabs/Favorites';
-import { FavoritesProvider } from './Home/HomeTabs/Partials/FavoritesContext';
-import OnboardingScreens from './OnboardingScreens';
+import { FavoritesProvider } from './Partials/FavoritesContext';
+import OnboardingScreens from './Partials/OnboardingScreens';
 
 const Stack = createStackNavigator();
 

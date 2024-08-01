@@ -22,20 +22,28 @@ const OnboardingScreens = () => {
       ¤ Recevoir des évaluations et des feedbacks.
       
       Que vous soyez étudiant, stagiaire ou recruteur, notre application est là pour simplifier et améliorer votre expérience de gestion des stages. Profitez de toutes les fonctionnalités pour une gestion efficace et sans tracas de vos stages.`,
-      image: require('./assets/graduation/970.png'),
+      image: require('../assets/graduation/970.png'),
     },
     {
         id: 2,
         title: 'Fonctionnalités',
         content: 'Découvrez nos exceptionnelles. Naviguez facilement dans l\'application grâce à une interface utilisateur intuitive et bénéficiez d\'outils puissants pour gérer vos stages de manière efficace. Que ce soit pour trouver des offres de stages, suivre vos candidatures, ou communiquer avec les recruteurs, notre application vous offre tout ce dont vous avez besoin.',
-        image: require('./assets/graduation/throw.png'),
+        image: require('../assets/graduation/throw.png'),
       },
       
+        {
+            id: 3,
+            title: 'Besoin d\'aide ! , Feedback...',
+            content: 'Nous sommes là pour vous aider ! Si vous avez des questions, des suggestions ou des problèmes, n\'hésitez pas à nous contacter. Votre avis est précieux pour nous permettre d\'améliorer continuellement notre application. Merci de contribuer à faire de notre plateforme un meilleur outil pour tous.',
+            image: require('../assets/graduation/tr06.jpg'),
+          },
+          
+      
       {
-        id: 3,
+        id: 4,
         title: 'Commencer',
         content: 'Commencez dès maintenant à utiliser notre application pour une gestion simplifiée de vos stages. Inscrivez-vous, créez votre profil, et explorez les nombreuses opportunités de stages disponibles. Notre plateforme vous accompagne pas à pas, de la recherche de stage à la validation de votre expérience professionnelle.',
-        image: require('./assets/graduation/giphy.webp'),
+        image: require('../assets/graduation/giphy.webp'),
       }
       
   ];
@@ -129,7 +137,10 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 10,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#666',
+  
+ /*    backgroundColor: '#007AFF', */
+
     borderRadius: 50,
   },
   buttonText: {

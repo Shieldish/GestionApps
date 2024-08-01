@@ -15,7 +15,7 @@ import ApplicationForm from './Home/HomeTabs/StagesTabs/ApplicationForm';
 import StagesPostuler from './Home/HomeTabs/Candidatures';
 import MoreDetails from './Home/HomeTabs/StagesTabs/MoreDetails';
 import Favorites from './Home/HomeTabs/Favorites'
-import { FavoritesProvider } from './Home/HomeTabs/Partials/FavoritesContext';
+import { FavoritesProvider } from './Partials/FavoritesContext';
 
 const Stack = createStackNavigator();
 

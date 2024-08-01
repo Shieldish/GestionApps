@@ -5,8 +5,8 @@ import axios from 'axios';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Divider } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
-import { useFavorites } from './Partials/FavoritesContext';
-import BottomSheet from './Partials/BottomSheet'; 
+import { useFavorites } from '../../Partials/FavoritesContext';
+import BottomSheet from '../../Partials/BottomSheet'; 
 
 const Favorites = () => {
   const [favoriteJobs, setFavoriteJobs] = useState([]);

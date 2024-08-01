@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
-    borderColor: '#007bff',
+    borderColor: 'white',
     borderWidth: 1,
   },
   cardTitle: {

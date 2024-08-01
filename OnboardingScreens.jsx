@@ -15,27 +15,27 @@ const OnboardingScreens = () => {
     {
       title: 'Bienvenue',
       content: `Bienvenue dans notre application de gestion de stages. Cette plateforme est conçue pour vous aider à organiser et suivre facilement vos stages, de l'inscription à l'évaluation finale. Grâce à notre application, vous pouvez :
-      * Rechercher et postuler à des offres de stages.
-      * Suivre l'état de vos candidatures en temps réel.
-      * Communiquer avec les superviseurs et les entreprises.
-      * Remplir et soumettre des rapports de stage.
-      * Recevoir des évaluations et des feedbacks.
+      ¤ Rechercher et postuler à des offres de stages.
+      ¤ Suivre l'état de vos candidatures en temps réel.
+      ¤ Communiquer avec les superviseurs et les entreprises.
+      ¤ Remplir et soumettre des rapports de stage.
+      ¤ Recevoir des évaluations et des feedbacks.
       
       Que vous soyez étudiant, stagiaire ou recruteur, notre application est là pour simplifier et améliorer votre expérience de gestion des stages. Profitez de toutes les fonctionnalités pour une gestion efficace et sans tracas de vos stages.`,
-      image: require('./assets/11.jpeg'),
+      image: require('./assets/graduation/970.png'),
     },
     {
         id: 2,
         title: 'Fonctionnalités',
-        content: 'Découvrez nos fonctionnalités exceptionnelles. Naviguez facilement dans l\'application grâce à une interface utilisateur intuitive et bénéficiez d\'outils puissants pour gérer vos stages de manière efficace. Que ce soit pour trouver des offres de stages, suivre vos candidatures, ou communiquer avec les recruteurs, notre application vous offre tout ce dont vous avez besoin.',
-        image: require('./assets/out-1.png'),
+        content: 'Découvrez nos exceptionnelles. Naviguez facilement dans l\'application grâce à une interface utilisateur intuitive et bénéficiez d\'outils puissants pour gérer vos stages de manière efficace. Que ce soit pour trouver des offres de stages, suivre vos candidatures, ou communiquer avec les recruteurs, notre application vous offre tout ce dont vous avez besoin.',
+        image: require('./assets/graduation/throw.png'),
       },
       
       {
         id: 3,
         title: 'Commencer',
         content: 'Commencez dès maintenant à utiliser notre application pour une gestion simplifiée de vos stages. Inscrivez-vous, créez votre profil, et explorez les nombreuses opportunités de stages disponibles. Notre plateforme vous accompagne pas à pas, de la recherche de stage à la validation de votre expérience professionnelle.',
-        image: require('./assets/out-2.png'),
+        image: require('./assets/graduation/giphy.webp'),
       }
       
   ];
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: width,
-    height: height * 0.3,
+    height: height * 0.45,
     resizeMode: 'cover',
   },
   title: {
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   content: {
     fontSize: 16,
-    fontWeight:'semibold',
+    fontWeight:'medium',
     textAlign: 'center',
     paddingHorizontal: 20,
   },

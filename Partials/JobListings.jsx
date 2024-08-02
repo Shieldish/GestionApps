@@ -1,16 +1,13 @@
+
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Platform, TextInput, Animated, ScrollView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity,Platform ,TextInput, Animated, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import Collapsible from 'react-native-collapsible';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 const Divider = () => <View style={styles.divider} />;
 
-const JobCard = React.memo(({ job, 
-  
-  onToggleFavorite }) => {
+const JobCard = React.memo(({ job, onToggleFavorite }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const navigation = useNavigation();
 
@@ -29,8 +26,6 @@ const JobCard = React.memo(({ job,
     checkFavoriteStatus();
   }, [job.id]);
 
-
-  
   const toggleFavorite = useCallback(async () => {
     try {
       const favoriteJobs = await AsyncStorage.getItem('favoriteJobs');
@@ -54,15 +49,8 @@ const JobCard = React.memo(({ job,
 
   return (
     <View style={styles.card}>
-      <TouchableOpacity
-        style={styles.favoriteButton}
-        onPress={toggleFavorite}
-      >
-        <Ionicons
-          name={isFavorite ? 'heart' : 'heart-outline'}
-          size={24}
-          color={isFavorite ? 'red' : 'black'}
-        />
+      <TouchableOpacity style={styles.favoriteButton} onPress={toggleFavorite}>
+        <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={24} color={isFavorite ? 'red' : 'black'} />
       </TouchableOpacity>
       <Text style={styles.cardTitle}>{job.Titre}</Text>
       <Text style={styles.cardSubtitle}>{job.Libelle}</Text>
@@ -74,9 +62,7 @@ const JobCard = React.memo(({ job,
       <Text style={styles.cardInfo}><Text style={styles.bold}>Date Fin:</Text> {new Date(job.DateFin).toLocaleDateString()}</Text>
       <Text style={styles.cardInfo3}>Publié le : {new Date(job.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</Text>
       <Divider />
-      <TouchableOpacity style={styles.button}
-        onPress={() => navigation.navigate('Postulation', { stage: job })}
-      >
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Postulation', { stage: job })}>
         <Text style={styles.buttonText}>View More Details</Text>
       </TouchableOpacity>
     </View>
@@ -84,12 +70,14 @@ const JobCard = React.memo(({ job,
 });
 
 const JobListings = ({ data }) => {
-  // ... (Keep all the existing state and effect hooks)
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredData, setFilteredData] = useState(data);
-  const [sortOrder, setSortOrder] = useState('newest'); // 'newest' or 'oldest'
-
+  const [filteredData, setFilteredData] = useState([]);
+  const [sortOrder, setSortOrder] = useState('newest');
   const [favoriteJobs, setFavoriteJobs] = useState([]);
+
+  useEffect(() => {
+    setFilteredData(data);
+  }, [data]);
 
   useEffect(() => {
     const loadFavoriteJobs = async () => {
@@ -106,17 +94,15 @@ const JobListings = ({ data }) => {
     };
     loadFavoriteJobs();
   }, [data]);
-  
+
   const handleToggleFavorite = useCallback((job, isFavorite) => {
-    setFavoriteJobs(prevFavorites => 
-      isFavorite
-        ? [...prevFavorites, job]
-        : prevFavorites.filter(favJob => favJob.id !== job.id)
+    setFavoriteJobs(prevFavorites =>
+      isFavorite ? [...prevFavorites, job] : prevFavorites.filter(favJob => favJob.id !== job.id)
     );
   }, []);
 
   useEffect(() => {
-    const filtered = data.filter(job => 
+    const filtered = data.filter(job =>
       job.Titre.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.Libelle.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.Domaine.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -124,24 +110,24 @@ const JobListings = ({ data }) => {
       job.Nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.Address.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.State.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.Experience.toLowerCase().includes(searchTerm.toLowerCase()) 
-    ); // Sort the filtered data
-    const sorted = [...filtered].sort((a, b) => {
+      job.Experience.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const sorted = filtered.sort((a, b) => {
       if (sortOrder === 'newest') {
         return new Date(b.createdAt) - new Date(a.createdAt);
       } else {
         return new Date(a.createdAt) - new Date(b.createdAt);
       }
     });
-  
+
     setFilteredData(sorted);
   }, [searchTerm, data, sortOrder]);
 
-  
   const FilterTab = ({ sortOrder, onSortChange }) => {
     const [expanded, setExpanded] = useState(false);
     const [animation] = useState(new Animated.Value(0));
-  
+
     const toggleAccordion = () => {
       const toValue = expanded ? 0 : 1;
       Animated.timing(animation, {
@@ -151,21 +137,17 @@ const JobListings = ({ data }) => {
       }).start();
       setExpanded(!expanded);
     };
-  
+
     const bodyHeight = animation.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 100], // Adjust this value based on your content
     });
-  
+
     return (
       <View style={styles.accordion}>
         <TouchableOpacity style={styles.header} onPress={toggleAccordion}>
-          <Text style={styles.headerText}>Sort by</Text>
-          <Ionicons 
-            name={expanded ? 'chevron-up-outline' : 'chevron-down-outline'} 
-            size={24} 
-            color="#192f6a" 
-          />
+          <Text style={styles.headerText}>triés par</Text>
+          <Ionicons name={expanded ? 'chevron-up-outline' : 'chevron-down-outline'} size={24} color="#192f6a" />
         </TouchableOpacity>
         <Animated.View style={[styles.body, { height: bodyHeight }]}>
           <TouchableOpacity
@@ -176,7 +158,7 @@ const JobListings = ({ data }) => {
             }}
           >
             <Ionicons name="time-outline" size={24} color={sortOrder === 'newest' ? '#192f6a' : '#7f8c8d'} />
-            <Text style={[styles.filterText, sortOrder === 'newest' && styles.activeFilterText]}>Most Recent</Text>
+            <Text style={[styles.filterText, sortOrder === 'newest' && styles.activeFilterText]}>Les plus Recents</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.filterButton, sortOrder === 'oldest' && styles.activeFilter]}
@@ -186,82 +168,67 @@ const JobListings = ({ data }) => {
             }}
           >
             <Ionicons name="calendar-outline" size={24} color={sortOrder === 'oldest' ? '#192f6a' : '#7f8c8d'} />
-            <Text style={[styles.filterText, sortOrder === 'oldest' && styles.activeFilterText]}>Oldest</Text>
+            <Text style={[styles.filterText, sortOrder === 'oldest' && styles.activeFilterText]}>Les plus anciens</Text>
           </TouchableOpacity>
         </Animated.View>
       </View>
     );
   };
 
-  
   const groupedData = useMemo(() => {
     if (!Array.isArray(filteredData) || filteredData.length === 0) return [];
-    
-    return Object.entries(filteredData.reduce((acc, item) => {
-      if (!acc[item.Domaine]) {
-        acc[item.Domaine] = [];
-      }
-      acc[item.Domaine].push(item);
-      return acc;
-    }, {}));
+
+    return Object.entries(
+      filteredData.reduce((acc, item) => {
+        if (!acc[item.Domaine]) {
+          acc[item.Domaine] = [];
+        }
+        acc[item.Domaine].push(item);
+        return acc;
+      }, {})
+    );
   }, [filteredData]);
 
-  if (filteredData.length === 0) {
-    return (
-      <View style={styles.container}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search jobs..."
-          value={searchTerm}
-          onChangeText={setSearchTerm}
+  const renderJobList = useCallback(
+    ([domain, jobs]) => (
+      <View style={styles.domaineContainer} key={domain}>
+        <Text style={styles.domaineTitle}>{domain}</Text>
+        <FlatList
+          data={jobs}
+          renderItem={({ item }) => <JobCard job={item} onToggleFavorite={handleToggleFavorite} />}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
         />
-        <View style={styles.noDataContainer}>
-          <Text style={styles.notFoundText}>"{searchTerm}" not found</Text>
-        </View>
+        <Divider />
       </View>
-    );
-  }
-
-
-  const renderJobList = useCallback(([domain, jobs]) => (
-    <View style={styles.domaineContainer} key={domain}>
-      <Text style={styles.domaineTitle}>{domain}</Text>
-      <FlatList
-        data={jobs}
-        renderItem={({ item }) => <JobCard job={item} onToggleFavorite={handleToggleFavorite} />}
-        keyExtractor={(item) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
-      <Divider />
-    </View>
-  ), [handleToggleFavorite]);
+    ),
+    [handleToggleFavorite]
+  );
 
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.searchInput}
-        placeholder="Search jobs..."
+        placeholder="Recherche..."
         value={searchTerm}
         onChangeText={setSearchTerm}
       />
       <FilterTab sortOrder={sortOrder} onSortChange={setSortOrder} />
       {filteredData.length === 0 ? (
         <View style={styles.noDataContainer}>
-          <Text style={styles.notFoundText}>"{searchTerm}" not found</Text>
+          <Text style={styles.notFoundText}>"{searchTerm}" pas trouvé(e)s</Text>
         </View>
       ) : (
         <ScrollView>
           {searchTerm
             ? filteredData.map(item => <JobCard key={item.id} job={item} onToggleFavorite={handleToggleFavorite} />)
-            : groupedData.map(renderJobList)
-          }
+            : groupedData.map(renderJobList)}
         </ScrollView>
       )}
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

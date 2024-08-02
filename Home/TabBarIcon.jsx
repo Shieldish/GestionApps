@@ -21,7 +21,7 @@ const TabBarIcon = ({ route, color, size }) => {
       iconName = 'clipboard';
       break;
     case 'Resultats':
-      iconName = 'check';
+      iconName = 'list-alt';
       break;
     default:
       iconName = 'question';

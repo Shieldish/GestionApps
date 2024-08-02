@@ -1,26 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, RefreshControl, ScrollView, View, Text } from 'react-native';
+import { SafeAreaView, StyleSheet, RefreshControl, ScrollView, View, Text, ActivityIndicator } from 'react-native';
 import JobListings from '../Partials/JobListings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ContentLoader, { Rect } from 'react-content-loader/native';
 import axios from 'axios';
-
-const Loader = () => (
-  <ContentLoader 
-    speed={1}
-    width={400}
-    height={150}
-    viewBox="0 0 400 150"
-    backgroundColor="#f3f3f3"
-    foregroundColor="#ecebeb"
-  >
-    <Rect x="0" y="10" rx="5" ry="5" width="360" height="10" />
-    <Rect x="0" y="30" rx="5" ry="5" width="320" height="10" />
-    <Rect x="0" y="50" rx="5" ry="5" width="280" height="10" />
-    <Rect x="0" y="80" rx="10" ry="10" width="400" height="60" />
-  </ContentLoader>
-);
 
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -34,20 +16,20 @@ const App = () => {
       const token = await AsyncStorage.getItem('userToken');
 
       if (!token) {
-        throw new Error('No authentication token found');
+        throw new Error("Aucun jeton d'authentification trouvé");
       }
 
       const response = await axios.get(`${process.env.BACKEND_URL}/etudiant/All`, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
       });
 
       setJobData(response.data.stages);
       setError('');
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setError('Failed to fetch data. Please check your network connection.');
+      console.error('Erreur lors de la récupération des données:', error);
+      setError('Échec de la récupération des données. Veuillez vérifier votre connexion réseau  . ' + error.message);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -65,20 +47,18 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {loading ? (
-          Array(5).fill().map((_, index) => <Loader key={index} />)
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
         ) : error ? (
           <View style={styles.errorContainer}>
             <Text style={styles.errorText}>{error}</Text>
           </View>
-        ) : !jobData ? (
+        ) : jobData.length === 0 ? (
           <View style={styles.noDataContainer}>
-            <Text style={styles.noDataText}>No job listings available.</Text>
+            <Text style={styles.noDataText}>Aucune offre d'emploi disponible.</Text>
           </View>
         ) : (
           <JobListings data={jobData} />
@@ -93,16 +73,26 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
-  errorContainer: {
+  loaderContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#FFE5E5', // Light red background for error container
+    borderRadius: 10, // Rounded corners
+    margin: 20, // Margin around the error container
+  },
   errorText: {
     fontSize: 16,
-    color: 'red',
+    color: '#D8000C', // Red color for error text
     textAlign: 'center',
+    fontWeight: 'bold',
   },
   noDataContainer: {
     flex: 1,

@@ -4,10 +4,10 @@
     "slug": "GestionApps",
     "version": "1.0.0",
     "orientation": "default",
-    "icon": "./assets/out-0.png",
+    "icon": "./assets/out-2.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/add.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/out-1.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.shieldish.GestionApps"

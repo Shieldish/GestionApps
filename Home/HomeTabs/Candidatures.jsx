@@ -24,23 +24,7 @@ const PostulantList = () => {
 
   const navigation = useNavigation();
 
- /*  const fetchPostulants = async () => {
-    try {
-      setError(null);
 
-      const token = await AsyncStorage.getItem('userToken');
-
-      const response = await axios.get(`${process.env.BACKEND_URL}/etudiant/stage_postuler`);
-      setPostulants(response.data.postulant);
-    } catch (error) {
-      console.error('Error fetching postulants:', error);
-      setError('Failed to load postulants. Please try again later.');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
- */
   const fetchPostulants = async () => {
     try {
       setError(null);
@@ -247,16 +231,19 @@ const styles = StyleSheet.create({
     color: '#007bff',
   },
   errorContainer: {
-    padding: 16,
-    backgroundColor: 'pink',
-    borderRadius: 5,
-    marginVertical: 10,
-    borderWidth: 1,
-    borderColor: 'red',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#FFE5E5', // Light red background for error container
+    borderRadius: 10, // Rounded corners
+    margin: 20, // Margin around the error container
   },
   errorText: {
-    color: 'red',
+    fontSize: 16,
+    color: '#D8000C', // Red color for error text
     textAlign: 'center',
+    fontWeight: 'bold',
   },
   card: {
     backgroundColor: 'white',

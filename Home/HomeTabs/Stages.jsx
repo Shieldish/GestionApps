@@ -4,7 +4,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { FontAwesome5 } from '@expo/vector-icons';
 
 const Stages = () => {
   const [stages, setStages] = useState([]);
@@ -127,12 +126,12 @@ const Stages = () => {
   const renderStageItem = ({ item }) => (
     <View style={styles.card}>
       <Text style={styles.jobTitle}>{item.Nom} - {item.Domaine}</Text>
-      <Text style={styles.companyLocation}><FontAwesome5 name="map-marker-alt" size={16} color="black" /> {item.Address}</Text>
+      <Text style={styles.companyLocation}>{item.Address}</Text>
       <Text style={styles.postedDate}>Il y a {getTimeSinceCreated(new Date(item.createdAt))}</Text>
       <View style={styles.hrLine} />
   
       <View style={styles.infoGrid}>
-        <InfoItem label="Postes vacants:" value={item.PostesVacants} />
+        <InfoItem label="Postes vacants:" value="1 poste ouvert" />
         <InfoItem label="Type d'emploi désiré :" value={`${item.Libelle}`} />
         <InfoItem label="Experience :" value={item.Experience} />
         <InfoItem label="Niveau d'étude :" value={item.Niveau} />
@@ -176,7 +175,7 @@ const Stages = () => {
 
   const renderEmptySearch = () => (
     <View style={styles.emptySearchContainer}>
-      <Text style={styles.emptySearchText}>{`"${search}" not found`}</Text>
+      <Text style={styles.emptySearchText}>{`"${search}" pas  trouvé(e)s`}</Text>
     </View>
   );
 

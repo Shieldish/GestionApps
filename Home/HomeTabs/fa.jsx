@@ -18,7 +18,7 @@ const Favorites = () => {
   const [appliedJobs, setAppliedJobs] = useState({});
   const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
   const [jobToDelete, setJobToDelete] = useState(null);
-  const [theMail,SetEmail]=useState(null)
+  const [theMail, SetEmail] = useState(null);
 
   const checkAppliedStatus = async (email, jobId) => {
     try {
@@ -27,17 +27,12 @@ const Favorites = () => {
         params: { email, stageId: jobId },
         headers: { Authorization: `Bearer ${token}` },
       });
-
-     
       return response.data.exists;
     } catch (error) {
       console.error('Erreur lors de la vérification du statut de candidature:', error);
-
       return false;
     }
   };
-
-
 
   const handleDeletePress = (job) => {
     setJobToDelete(job);
@@ -66,6 +61,7 @@ const Favorites = () => {
       </Text>
     );
   };
+
   const fetchJobsByIds = async (ids) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
@@ -93,15 +89,14 @@ const Favorites = () => {
           const favorites = await fetchJobsByIds(favoriteIds);
           setFavoriteJobs(Array.isArray(favorites) ? favorites : []);
 
-          // Check applied status for each job
+          // Vérifier le statut de candidature pour chaque poste
           const Data = await AsyncStorage.getItem('userData');
           const data = JSON.parse(Data);
-        //  console.log("Data =", data.userData.EMAIL)
           const email = data.userData.EMAIL;
           SetEmail(email)
           const appliedStatus = {};
           for (const job of favorites) {
-            appliedStatus[job.id] = await checkAppliedStatus( email, job.id);
+            appliedStatus[job.id] = await checkAppliedStatus(email, job.id);
           }
           setAppliedJobs(appliedStatus);
         } else {
@@ -136,25 +131,13 @@ const Favorites = () => {
       updateFavoritesCount(favoriteIds.length);
     } catch (error) {
       console.error('Erreur lors de la mise à jour des postes favoris:', error);
-
     }
   };
- /*  const onRefresh = async () => {
-    setRefreshing(true);
-    await loadFavoriteJobs();
-    setRefreshing(false);
-  }; */
 
   const onRefresh = async () => {
     setRefreshing(true);
-    setError(null); // Reset the error state
-    try {
-      await loadFavoriteJobs();
-    } catch (error) {
-      setError(error);
-    } finally {
-      setRefreshing(false);
-    }
+    await loadFavoriteJobs();
+    setRefreshing(false);
   };
 
   if (loading) {
@@ -164,43 +147,30 @@ const Favorites = () => {
       </View>
     );
   }
-/* 
+
   if (error) {
     return (
       <View style={styles.errorContainer}  refreshing={refreshing}
       onRefresh={onRefresh}>
-       <Text style={styles.errorText}>Erreur lors du chargement des postes favoris : {error.message}</Text>
+        <Text style={styles.errorText}>Erreur lors du chargement des postes favoris : {error.message}</Text>
       </View>
-  
     );
-  } */
-
-    if (error) {
-      return (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Erreur lors du chargement des postes favoris : {error.message}</Text>
-          <TouchableOpacity style={styles.refreshButton} onPress={onRefresh}>
-            <Text style={styles.refreshButtonText}>Rafraîchir</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
+  }
 
   const renderJob = ({ item: job }) => (
     <View style={[
       styles.jobContainer,
       appliedJobs[job.id] && styles.appliedJobContainer
     ]}>
-       <TouchableOpacity
+      <TouchableOpacity
         style={styles.trashIcon}
         onPress={() => handleDeletePress(job)}
       >
         <Ionicons name="trash-outline" size={24} color="red" />
       </TouchableOpacity>
       {appliedJobs[job.id] && (
-         <Text style={styles.appliedText}>Déjà Candidaté</Text>
+        <Text style={styles.appliedText}>Déjà Candidaté</Text>
       )}
-        
       <Text style={styles.cardTitle}>{job.Titre}</Text>
       <Text style={styles.cardSubtitle}>{job.Libelle}</Text>
       <Divider />
@@ -209,7 +179,7 @@ const Favorites = () => {
       <Text style={styles.cardInfo}><Text style={styles.bold}>Experience:</Text> {job.Experience}</Text>
       <Text style={styles.cardInfo}><Text style={styles.bold}>Niveau:</Text> {job.Niveau}</Text>
       <Text style={styles.cardInfo}><Text style={styles.bold}>Postes Vacants:</Text> {job.PostesVacants}</Text>
-      <Text style={styles.cardInfo}><Text style={styles.bold}>Date Debut:</Text> {new Date(job.DateDebut).toLocaleDateString()}</Text>
+      <Text style={styles.cardInfo}><Text style={styles.bold}>Date Début:</Text> {new Date(job.DateDebut).toLocaleDateString()}</Text>
       <Text style={styles.cardInfo}><Text style={styles.bold}>Date Fin:</Text> {new Date(job.DateFin).toLocaleDateString()}</Text>
       <Text style={styles.cardInfo3}>Publié le : {new Date(job.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</Text>
       <Divider />
@@ -218,8 +188,8 @@ const Favorites = () => {
         onPress={() => {
           if (appliedJobs[job.id]) {
             navigation.navigate('MoreDetails', {
-              stageId:job.id,
-              etudiantEmail:theMail
+              stageId: job.id,
+              etudiantEmail: theMail
             })
           } else {
             navigation.navigate('Postulation', { stage: job });
@@ -227,7 +197,7 @@ const Favorites = () => {
         }}
       >
         <Text style={styles.buttonText}>
-        {appliedJobs[job.id] ? 'Voir les détails de la candidature' : 'Postuler'}
+          {appliedJobs[job.id] ? 'Voir les détails de la candidature' : 'Postuler'}
         </Text>
       </TouchableOpacity>
     </View>
@@ -244,7 +214,7 @@ const Favorites = () => {
   return (
     <View style={styles.container}>
       {favoriteJobs && Array.isArray(favoriteJobs) && favoriteJobs.length === 0 ? (
-          <Text style={styles.noFavoritesText}>Aucun poste favori pour l'instant</Text>       
+        <Text style={styles.noFavoritesText}>Aucun poste favori pour l'instant</Text>
       ) : (
         <FlatList
           data={favoriteJobs}
@@ -273,125 +243,15 @@ const Favorites = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    padding: 5,
-  },
-  noFavoritesText: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginTop: 20,
-    color: '#666',
-  },
-  jobContainer: {
-    backgroundColor: '#FFFFFF',
     padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  cardTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    marginTop:30,
-    color: '#2c3e50',
-    textAlign: 'center',
-    textTransform: 'uppercase',
-  },
-  cardSubtitle: {
-    fontSize: 18,
-    color: '#666',
-    marginBottom: 12,
-    textAlign: 'center',
-    textTransform: 'uppercase',
-  },
-  cardInfo: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#7f8c8d',
-  },
-  cardInfo2: {
-    fontSize: 16,
-    margin:10,
-    color: '#007bff',
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    textAlign:'center'
-  },
-  cardInfo3: {
-    fontSize: 14,
-    color: '#ccc',
-    marginTop: 5,
-    marginBottom: 10,
-    textAlign: 'right',
-  },
-  bold: {
-    fontWeight: 'bold',
-  },
-  button: {
-    backgroundColor: '#192f6a',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    marginTop: 10,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  footer: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginTop: 10,
-    color: '#666',
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: 'pink',
-  },
-  errorText: {
-    color: 'red',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  refreshButton: {
-    backgroundColor: '#192f6a',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  refreshButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-
-  trashIcon: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    zIndex: 1,
   },
   messageText: {
     fontSize: 16,
     textAlign: 'center',
+    padding: 20,
   },
   highlightedText: {
-    fontWeight: 'bold',
+    fontSize: 16,
   },
   greenText: {
     color: 'green',
@@ -402,38 +262,83 @@ const styles = StyleSheet.create({
   boldText: {
     fontWeight: 'bold',
   },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+  },
+  jobContainer: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
   appliedJobContainer: {
-    borderColor: 'black',
-    backgroundColor :'#FFFAF0'
+    backgroundColor: '#f0f8ff',
   },
-/*   appliedText: {
-    color: 'red',
-    fontWeight: 'bold',
+  trashIcon: {
     position: 'absolute',
-    top: 5,
-    left: 5,
-  }, */
+    top: 10,
+    right: 10,
+  },
   appliedText: {
-    color: 'red',
-    fontWeight: 'bold',
-    position: 'absolute',
-    top: 20,
-    left: -25,
-    transform: [{ rotate: '-45deg' }],
-    backgroundColor: 'rgba(255, 255, 255, 0.5)', // Semi-transparent white background
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 50,
-    overflow: 'hidden',
-    zIndex: 1, // Ensure it's above other elements
+    color: 'green',
+    fontSize: 14,
+    marginBottom: 5,
   },
-  viewDetailsButton: {
-    backgroundColor: 'black',
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  cardSubtitle: {
+    fontSize: 16,
+    color: '#666',
+  },
+  cardInfo: {
+    fontSize: 14,
+  },
+  cardInfo2: {
+    fontSize: 14,
+    color: '#666',
+  },
+  cardInfo3: {
+    fontSize: 12,
+    color: '#999',
+  },
+  bold: {
+    fontWeight: 'bold',
+  },
+  button: {
+    padding: 10,
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+    marginTop: 10,
   },
   buttonText: {
-    color: 'white',
+    color: '#fff',
     textAlign: 'center',
+  },
+  viewDetailsButton: {
+    backgroundColor: '#28a745',
+  },
+  header: {
+    fontSize: 20,
     fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  footer: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  noFavoritesText: {
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 20,
   },
 });
 

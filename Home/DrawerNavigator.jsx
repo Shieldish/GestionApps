@@ -66,7 +66,7 @@ const CustomDrawerContent = (props) => {
           icon={({ color, size }) => <Icon name="info-circle" color={color} size={size} />}
         /> */}
         <DrawerItem
-          label="Logout"
+          label="Déconnexion"
           onPress={props.handleLogoutPress}
           icon={({ color, size }) => <Icon name="sign-out" color={color} size={size} />}
         />
@@ -93,11 +93,14 @@ const DrawerNavigator = ({ handleLogoutPress }) => {
               iconName = 'home';
               break;
             case 'Profiles':
-              iconName = 'user';
+              iconName = 'address-book';
               break;
             case 'Settings':
-              iconName = 'cog';
+              iconName = 'gears';
               break;
+            case 'About':
+              iconName = 'info-circle';
+              break;  
             default:
               iconName = 'question';
           }
@@ -120,24 +123,24 @@ const DrawerNavigator = ({ handleLogoutPress }) => {
         name="HomeTabs"
         component={HomeTabs}
         options={{
-          drawerLabel: 'Home',
+          drawerLabel: 'Accueille',
           headerTitle: 'Gestion de Stages',
         }}
       />
       <Drawer.Screen
         name="Profiles"
         component={Profiles}
-        options={{ drawerLabel: 'My Profiles', headerTitle: 'Profiles' }}
+        options={{ drawerLabel: 'Profiles', headerTitle: 'Profiles' }}
       />
       <Drawer.Screen
         name="Settings"
         component={Settings}
-        options={{ drawerLabel: 'Settings', headerTitle: 'Settings' }}
+        options={{ drawerLabel: 'Paramètre', headerTitle: 'Settings' }}
       />
        <Drawer.Screen
         name="About"
         component={About}
-        options={{ drawerLabel: 'About', headerTitle: 'About' }}
+        options={{ drawerLabel: 'A propos', headerTitle: 'About' }}
       /> 
     </Drawer.Navigator>
   );

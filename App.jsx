@@ -18,6 +18,7 @@ import Favorites from './Home/HomeTabs/Favorites';
 import { FavoritesProvider } from './Partials/FavoritesContext';
 import OnboardingScreens from './Partials/OnboardingScreens';
 
+
 const Stack = createStackNavigator();
 
 // Create a Context for authentication
@@ -53,6 +54,7 @@ const App = () => {
   }
 
   return (
+ 
     <FavoritesProvider>
       <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, hasSeenOnboarding, setHasSeenOnboarding }}>
         <NavigationContainer>
@@ -72,6 +74,7 @@ const App = () => {
         </NavigationContainer>
       </AuthContext.Provider>
     </FavoritesProvider>
+    
   );
 };
 

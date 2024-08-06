@@ -124,7 +124,8 @@ const Stages = () => {
   const renderStageItem = ({ item, index }) => (
     <View style={styles.card}>
       <Text style={styles.jobTitle}>{item.Nom} - {item.Domaine}</Text>
-      <Text style={styles.jobDate}>{getTimeSinceCreated(new Date(item.createdAt))}</Text>
+      <Text style={styles.companyLocation}> <Icon name='map-marker' size={15} ></Icon> {item.Address}</Text>
+      <Text style={styles.jobDate}>{ 'publié ' +getTimeSinceCreated(new Date(item.createdAt))}</Text>
       <View style={styles.hrLine} />
 
       <View style={styles.detailContainer}>
@@ -205,7 +206,7 @@ const Stages = () => {
       {loading && !refreshing ? (
         <ActivityIndicator size="large" color="#007bff" />
       ) : (
-        stages.length === 0 ? (
+        !stages? (
           searchError ? renderEmptySearch() : null
         ) : (
           <FlatList
@@ -269,7 +270,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#007bff',
+    color:'#192f6a',
+   /*   '#007bff', */
     marginBottom: 8,
   },
   jobDate: {
@@ -324,7 +326,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'justify',
   },
-  postulateButton: {
+ /*  postulateButton: {
     backgroundColor: '#007bff',
     paddingVertical: 12,
     borderRadius: 8,
@@ -333,6 +335,18 @@ const styles = StyleSheet.create({
   postulateButtonText: {
     color: '#fff',
     fontSize: 18,
+    fontWeight: 'bold',
+  }, */
+  postulateButton: {
+    backgroundColor: '#007bff',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    alignSelf: 'flex-end',
+    marginTop: 10,
+  },
+  postulateButtonText: {
+    color: '#fff',
     fontWeight: 'bold',
   },
   paginationContainer: {
@@ -382,6 +396,11 @@ const styles = StyleSheet.create({
   emptySearchText: {
     fontSize: 18,
     color: '#888',
+  },
+  companyLocation: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 2,
   },
 });
 

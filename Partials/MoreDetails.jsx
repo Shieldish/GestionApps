@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Animated, Linking, TouchableOpacity,RefreshControl  } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Animated, Linking,Alert, TouchableOpacity,RefreshControl  } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -166,11 +166,17 @@ const MoreDetails = ({ route }) => {
                             </SectionWithIcon>
 
                             {/* Documents */}
-                            <SectionWithIcon icon="file-alt" title="Pièces justificatives">
+                        {/*     <SectionWithIcon icon="file-alt" title="Pièces justificatives">
                               <DocumentLink label="CV" url={candidature.cv} />
                               <DocumentLink label="Lettre de Motivation" url={candidature.lettre_motivation} />
                               <DocumentLink label="Relevés de Notes" url={candidature.releves_notes} />
-                            </SectionWithIcon>
+                            </SectionWithIcon> */}
+
+     <SectionWithIcon icon="file-alt" title="Pièces justificatives">
+        <DocumentLink label="CV" url={candidature.cv} />
+        <DocumentLink label="Lettre de Motivation" url={candidature.lettre_motivation} />
+        <DocumentLink label="Relevés de Notes" url={candidature.releves_notes} />
+      </SectionWithIcon>
                         </Animated.View>
                     )}
                 </Animated.View>
@@ -195,7 +201,7 @@ const InfoItem = ({ label, value }) => (
     </Text>
 );
 
-const DocumentLink = ({ label, url }) => (
+/* const DocumentLink = ({ label, url }) => (
     <View style={styles.documentLinkContainer}>
         <FontAwesome5 
             name="file-pdf" 
@@ -213,7 +219,26 @@ const DocumentLink = ({ label, url }) => (
         )}
     </View>
 );
+ */
 
+const DocumentLink = ({ label, url }) => {
+    const openDocument = async () => {
+      const supported = await Linking.canOpenURL(url);
+      console.log(url)
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert("Error", "Cannot open this document");
+      }
+    };
+  
+    return (
+      <TouchableOpacity onPress={openDocument} style={styles.documentLink}>
+        <FontAwesome5 name="file-pdf" size={18} color="#007AFF" />
+        <Text style={styles.documentLinkText}>{label}</Text>
+      </TouchableOpacity>
+    );
+  };
 
 const styles = StyleSheet.create({
     scrollContainer: {
@@ -361,6 +386,19 @@ const styles = StyleSheet.create({
         color: '#FF3B30',
         fontFamily: 'Roboto-Bold',
     },
+
+    documentLink: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+      },
+      documentLinkText: {
+        marginLeft: 10,
+        color: '#007AFF',
+        textDecorationLine: 'underline',
+        fontFamily: 'Roboto-Regular',
+      },
 });
+
 
 export default MoreDetails;

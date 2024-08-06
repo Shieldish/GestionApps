@@ -36,8 +36,8 @@ const MoreDetails = ({ route }) => {
     useEffect(() => {
         const loadFonts = async () => {
             await Font.loadAsync({
-                'Roboto-Bold': require('../../../assets/fonts/Roboto-Bold.ttf'),
-                'Roboto-Regular': require('../../../assets/fonts/Roboto-Regular.ttf'),
+                'Roboto-Bold': require('../assets/fonts/Roboto-Bold.ttf'),
+                'Roboto-Regular': require('../assets/fonts/Roboto-Regular.ttf'),
             });
             setFontsLoaded(true);
         };

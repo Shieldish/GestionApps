@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, RefreshControl, ScrollView, View, Text, ActivityIndicator } from 'react-native';
-import JobListings from '../Partials/JobListings';
+import JobListings from '../../Partials/JobListings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
@@ -54,9 +54,9 @@ const App = () => {
           </View>
         ) : error ? (
           <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{error}</Text>
+            <Text style={styles.errorText}>{error}</Text>2
           </View>
-        ) : jobData.length === 0 ? (
+        ) : !jobData ? (
           <View style={styles.noDataContainer}>
             <Text style={styles.noDataText}>Aucune offre d'emploi disponible.</Text>
           </View>

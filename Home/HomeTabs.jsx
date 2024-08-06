@@ -1,11 +1,11 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Home from './HomeScreen';
+import Home from './HomeTabs/HomeScreen';
 import Stages from './HomeTabs/Stages';
 import StagesPostuler from './HomeTabs/Candidatures';
 import Resultats from './HomeTabs/Resultats';
 import Favorites from './HomeTabs/Favorites';
-import TabBarIcon from './TabBarIcon';
+import TabBarIcon from './components/TabBarIcon';
 
 const Tab = createBottomTabNavigator();
 

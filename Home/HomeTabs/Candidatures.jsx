@@ -53,7 +53,7 @@ const PostulantList = () => {
       if (error.response && error.response.status === 404) {
         setError('Vous n\'avez pas de stage postuler');
       } else {
-        setError(error.message);
+        setError(' Erreur lors de la récupération des données: '+error.message);
       }
     } finally {
       setLoading(false);
@@ -89,7 +89,8 @@ const PostulantList = () => {
         height={150}
         viewBox="0 0 400 150"
         backgroundColor="#f3f3f3"
-        foregroundColor="#ecebeb"
+        foregroundColor="#ecebeb" 
+
       >
         <Rect x="0" y="10" rx="5" ry="5" width="360" height="10" />
         <Rect x="0" y="30" rx="5" ry="5" width="320" height="10" />
@@ -158,7 +159,7 @@ const PostulantList = () => {
               etudiantEmail: item.etudiantEmail
             })}
           >
-            <Text><Icon name="info" size={16} /> View more Details</Text>
+            <Text><Icon name="info" size={16} /> plus de details</Text>
           </TouchableOpacity>
         </View>
       </Animated.View>

@@ -2,7 +2,7 @@ import React, { useRef, useCallback } from 'react';
 import { View } from 'react-native';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import DrawerNavigator from './DrawerNavigator';
-import LogoutBottomSheet from './HomeDrawers/Deconnexion';
+import LogoutBottomSheet from '../HomeDrawers/Deconnexion';
 
 const HomePage = () => {
   const logoutBottomSheetRef = useRef(null);

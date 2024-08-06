@@ -9,11 +9,11 @@ import LoginScreen from './connection/Login';
 import RegistrationScreen from './connection/Registration';
 import ForgetPasswordScreen from './connection/ForgetPassword';
 import RegistrationSuccessMessages from './connection/RegistrationSuccessMessages';
-import HomePage from './Home/HomeDrawers';
-import Postulation from './Home/HomeTabs/StagesTabs/Postulation';
-import ApplicationForm from './Home/HomeTabs/StagesTabs/ApplicationForm';
+import HomePage from './Home/components/HomeDrawers';
+import Postulation from './Partials/Postulation';
+import ApplicationForm from './Partials/ApplicationForm';
 import StagesPostuler from './Home/HomeTabs/Candidatures';
-import MoreDetails from './Home/HomeTabs/StagesTabs/MoreDetails';
+import MoreDetails from './Partials/MoreDetails';
 import Favorites from './Home/HomeTabs/Favorites';
 import { FavoritesProvider } from './Partials/FavoritesContext';
 import OnboardingScreens from './Partials/OnboardingScreens';
@@ -65,10 +65,10 @@ const App = () => {
             <Stack.Screen name="RegistrationSuccessMessages" component={RegistrationSuccessMessages} options={{ headerShown: false }} />
             <Stack.Screen name="Onboarding" component={OnboardingScreens} options={{ headerShown: false }} />
             <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }} />
-            <Stack.Screen name="Postulation" component={Postulation} options={{ headerShown: true, title: 'Postulation' }} />
-            <Stack.Screen name="ApplicationForm" component={ApplicationForm} options={{ title: 'Formulaire de Candidature' }} />
+            <Stack.Screen name="Postulation" component={Postulation} options={{ headerShown: true, title: 'Postulation' , headerTitleAlign: 'center', }} />
+            <Stack.Screen name="ApplicationForm" component={ApplicationForm} options={{ title: 'Formulaire de Candidature' ,headerTitleAlign: 'center',}} />
             <Stack.Screen name="StagesPostuler" component={StagesPostuler} options={{ title: 'Stages Postuler' }} />
-            <Stack.Screen name="MoreDetails" component={MoreDetails} options={{ title: 'Candidature' }} />
+            <Stack.Screen name="MoreDetails" component={MoreDetails} options={{ headerShown: true, title: 'Candidature',headerTitleAlign: 'center' }} />
             <Stack.Screen name="Favorites" component={Favorites} options={{ title: 'Favoris' }} />
           </Stack.Navigator>
         </NavigationContainer>

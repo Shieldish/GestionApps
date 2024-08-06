@@ -3,10 +3,11 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerI
 import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import HomeTabs from './HomeTabs';
-import Profiles from './HomeDrawers/Profiles';
-import Settings from './HomeDrawers/Settings';
-import About from './HomeDrawers/Abouts'; // Ensure this is the correct import
+import Deconnexion from '../HomeDrawers/Deconnexion';
+import HomeTabs from '../HomeTabs';
+import Profiles from '../HomeDrawers/Profiles';
+import Settings from '../HomeDrawers/Settings';
+import About from '../HomeDrawers/Abouts'; // Ensure this is the correct import
 
 const Drawer = createDrawerNavigator();
 
@@ -93,13 +94,16 @@ const DrawerNavigator = ({ handleLogoutPress }) => {
               iconName = 'home';
               break;
             case 'Profiles':
-              iconName = 'address-book';
+              iconName = 'user-circle-o';
               break;
             case 'Settings':
-              iconName = 'gears';
+              iconName = 'cogs';
               break;
             case 'About':
               iconName = 'info-circle';
+              break; 
+            case 'Deconnexion' :
+              iconName ='sign-out-alt';
               break;  
             default:
               iconName = 'question';

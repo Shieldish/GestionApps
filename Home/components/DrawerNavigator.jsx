@@ -110,8 +110,8 @@ const DrawerNavigator = ({ handleLogoutPress }) => {
           }
           return <Icon name={iconName} size={size} color={color} />;
         },
-        drawerActiveTintColor: 'black',
-        drawerInactiveTintColor: 'grey',
+        drawerActiveTintColor: 'blue',
+        drawerInactiveTintColor: 'silver',
         drawerStyle: {
           backgroundColor: '#f5f5f5',
           width: 290,

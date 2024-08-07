@@ -17,7 +17,7 @@ const HomeTabs = () => {
         tabBarIcon: ({ color, size }) => (
           <TabBarIcon route={route} color={color} size={size} />
         ),
-        tabBarActiveTintColor: 'black',
+        tabBarActiveTintColor: 'blue',
         tabBarInactiveTintColor: 'silver',
         tabBarStyle: {
           backgroundColor: '#f5f5f5',

@@ -14,12 +14,9 @@ const HomeTabs = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        headerTitleAlign: 'center',
         tabBarIcon: ({ color, size }) => (
           <TabBarIcon route={route} color={color} size={size} />
         ),
-   /*      tabBarActiveTintColor: '#007bff',
-        tabBarInactiveTintColor: 'grey', */
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'silver',
         tabBarStyle: {
@@ -28,9 +25,15 @@ const HomeTabs = () => {
           paddingBottom: 5,
           paddingTop: 5,
           height: 60,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2,
+          shadowRadius: 4,
+          elevation: 5,
         },
         tabBarLabelStyle: {
           fontSize: 12,
+          fontWeight: 'bold',
         },
       })}
     >

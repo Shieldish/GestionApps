@@ -2,10 +2,11 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useFavorites } from '../../Partials/FavoritesContext';
+import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
-const TabBarIcon = ({ route, color, size }) => {
+const TabBarIcon = ({ route, color, size, focused }) => {
   const { favoritesCount } = useFavorites();
-
+  
   let iconName;
   switch (route.name) {
     case 'Home':
@@ -27,9 +28,24 @@ const TabBarIcon = ({ route, color, size }) => {
       iconName = 'question';
   }
 
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: withSpring(focused ? 1.2 : 1, {
+            damping: 10,
+            stiffness: 100,
+          }),
+        },
+      ],
+    };
+  });
+
   return (
     <View>
-      <Icon name={iconName} size={size} color={color} />
+      <Animated.View style={animatedStyle}>
+        <Icon name={iconName} size={size} color={color} />
+      </Animated.View>
       {route.name === 'Favorites' && favoritesCount > 0 && (
         <View style={{
           position: 'absolute',

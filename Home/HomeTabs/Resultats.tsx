@@ -1,51 +1,20 @@
-// Home.jsx
-
+// ExampleComponent.jsx
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { View, Text, Button } from 'react-native';
+import { useTheme } from '../../Services/ThemeContext';  
 
 const Resultats = () => {
-  const navigation = useNavigation();
-
+  const { globalStyles, toggleTheme } = useTheme(); // Destructure globalStyles and toggleTheme
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to the resultat Page</Text>
-     
+    <View style={globalStyles.container}>
+      <Text style={globalStyles.text}>This is an example text</Text>
+      <Button title="Toggle Dark Mode" onPress={toggleTheme} />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#007bff',
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#007bff',
-    paddingVertical: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
+
+
 
 export default Resultats;

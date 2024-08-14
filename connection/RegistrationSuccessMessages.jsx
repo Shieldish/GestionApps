@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logoutButton: {
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#ccc',
     color: '#333',
   },
   resendButton: {

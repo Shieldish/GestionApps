@@ -4,6 +4,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BACKEND_URL } from '@env';
+import { useAuth } from '../App';
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -11,6 +13,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const { setIsLoggedIn, setUserToken, setHasSeenOnboarding } = useAuth();
 
   const navigation = useNavigation();
 
@@ -40,6 +44,9 @@ const Login = () => {
   }, []);
 
   const handleLogin = async () => {
+    setIsLoading(true);
+    setErrorMessage('');
+
     if (!email || !password) {
       setErrorMessage('Please fill in all fields.');
       return;
@@ -57,6 +64,7 @@ const Login = () => {
           email: email,
           password: password
         }),
+        credentials: 'include',
       });
 
       const data = await response.json(); // Parse response JSON
@@ -68,33 +76,32 @@ const Login = () => {
         await AsyncStorage.setItem('userToken', data.token);
         await AsyncStorage.setItem('userData', JSON.stringify(data.userData));
 
-        // Navigate to next screen or handle success
-     
+        setIsLoggedIn(true);
+        setUserToken(data.token);
 
-      /*   navigation.replace('HomePage'); */
+        const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+        setHasSeenOnboarding(!!hasSeenOnboarding);
 
-      // Check if the user has seen the onboarding screens
-      const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
-
-      if (hasSeenOnboarding) {
-        // If the user has seen onboarding, navigate to the home page
-        navigation.replace('HomePage');
+        if (hasSeenOnboarding) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'HomePage' }],
+          });
+          
+        } else {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Onboarding' }],
+          });
+        }
       } else {
-        // If the user hasn't seen onboarding, navigate to the onboarding screens
-        navigation.replace('Onboarding');
-      }
-
-      } else {
-        // Handle login failure
         setErrorMessage(data.message || 'Login failed');
       }
-
     } catch (error) {
-      // Handle network errors or other exceptions
       console.error('Login error:', error);
       setErrorMessage('An error occurred while logging in.');
     } finally {
-      setIsLoading(false); // Stop loading indicator
+      setIsLoading(false);
     }
   };
 

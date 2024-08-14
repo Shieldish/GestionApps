@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     color: '#cccaaa',
   },
   card: {
-    backgroundColor: '#ffffffg',
+    backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 20,
     marginHorizontal: 10,
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
-    borderColor: '#cccaaa',
+    borderColor: '#ccc',
     borderWidth: 1,
   },
   cardTitle: {

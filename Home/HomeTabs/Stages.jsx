@@ -4,8 +4,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { useTheme } from   '../../Services/ThemeContext';  
 
 const Stages = () => {
+  const { globalStyles } = useTheme();
+  
   const [stages, setStages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -53,7 +56,7 @@ const Stages = () => {
         totalItems: response.data.pagination.totalItems,
       });
   
-      setSearchError(response.data.stages.length === 0);
+      setSearchError(!response.data.stages || response.data.stages.length === 0);
   
     } catch (error) {
       console.error('Error fetching stages:', error);
@@ -191,7 +194,7 @@ const Stages = () => {
       {loading && !refreshing ? (
         <ActivityIndicator size="large" color="#007bff" />
       ) : (
-        stages.length === 0 ? (
+        !stages ? (
           searchError ? renderEmptySearch() : null
         ) : (
           <FlatList

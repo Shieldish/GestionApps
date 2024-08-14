@@ -3,13 +3,22 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Swiper from 'react-native-swiper';
+import { useAuth } from '../App'; 
 
 const { width, height } = Dimensions.get('window');
 
 const OnboardingScreens = () => {
   const navigation = useNavigation();
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const { setHasSeenOnboarding } = useAuth();
+
+  const completeOnboarding = async () => {
+    await AsyncStorage.setItem('hasSeenOnboarding', 'true');
+    setHasSeenOnboarding(true);
+  };
 
   const screens = [
     {
@@ -49,7 +58,13 @@ const OnboardingScreens = () => {
   ];
 
   const handleSkip = () => {
-    navigation.navigate('HomePage');
+    completeOnboarding();
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'HomePage' }],
+    });
+    
+    
   };
 
   const handlePrevious = () => {

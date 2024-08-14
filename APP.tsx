@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, { useState, useEffect, createContext, useContext ,useCallback} from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -28,8 +28,6 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
-  const [userToken, setUserToken] = useState(null);
-
 
   useEffect(() => {
     const checkTokenAndOnboarding = async () => {
@@ -37,7 +35,6 @@ const App = () => {
       const onboardingSeen = await AsyncStorage.getItem('hasSeenOnboarding');
       if (token) {
         setIsLoggedIn(true);
-        setUserToken(token);
       }
       if (onboardingSeen) {
         setHasSeenOnboarding(true);
@@ -46,39 +43,6 @@ const App = () => {
     };
 
     checkTokenAndOnboarding();
-  }, []);
-
-  useEffect(() => {
-    if (userToken) {
-      const tokenExpirationCheck = setInterval(async () => {
-        try {
-          const response = await fetch(`${process.env.BACKEND_URL}/check-token`, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${userToken}`,
-            },
-            credentials: 'include',
-          });
-
-          if (!response.ok) {
-            // Token is no longer valid
-            logout();
-          }
-        } catch (error) {
-          console.error('Error checking token:', error);
-          logout();
-        }
-      }, 60000); // Check every minute
-
-      return () => clearInterval(tokenExpirationCheck);
-    }
-  }, [userToken, logout]);
-
-  const logout = useCallback(async () => {
-    await AsyncStorage.removeItem('userToken');
-    setIsLoggedIn(false);
-    setUserToken(null);
-    navigation.replace('Login'); 
   }, []);
 
   if (isLoading) {
@@ -92,7 +56,7 @@ const App = () => {
   return (
     <ThemeProvider>
       <FavoritesProvider>
-        <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, hasSeenOnboarding, setHasSeenOnboarding , userToken, setUserToken,logout }}>
+        <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, hasSeenOnboarding, setHasSeenOnboarding }}>
           <NavigationContainer>
             <Stack.Navigator initialRouteName={isLoggedIn ? (hasSeenOnboarding ? "HomePage" : "Onboarding") : "Login"}>
               <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />

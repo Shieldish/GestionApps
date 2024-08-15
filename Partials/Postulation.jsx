@@ -49,7 +49,7 @@ const Postulation = ({ route }) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#3b5998" />
+        <ActivityIndicator size="large" color="#4A90E2" />
       </View>
     );
   }
@@ -58,7 +58,7 @@ const Postulation = ({ route }) => {
     <ScrollView style={styles.container}>
       <Animated.View style={{ opacity: fadeAnim, transform: [{ translateX: slideAnim }] }}>
         <LinearGradient
-          colors={['#4c669f', '#3b5998', '#192f6a']}
+          colors={['#4c669f', "#4A90E2", '#192f6a']}
           style={styles.header}
         >
           <Text style={styles.title}>Stage Details</Text>
@@ -84,7 +84,7 @@ const Postulation = ({ route }) => {
         <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
           <TouchableOpacity style={styles.postulerButton} onPress={handlePostuler}>
             <LinearGradient
-              colors={['#4c669f', '#3b5998', '#192f6a']}
+              colors={['#4c669f',"#4A90E2", '#192f6a']}
               style={styles.gradient}
             >
               <Text style={styles.postulerButtonText}>Postuler maintenant</Text>
@@ -116,7 +116,7 @@ const DetailItem = ({ icon, label, value }) => {
 
   return (
     <Animated.View style={[styles.detailItem, { opacity: fadeAnim }]}>
-      <Icon name={icon} size={20} color="#3b5998" style={styles.icon} />
+      <Icon name={icon} size={20} color="#4A90E2" style={styles.icon} />
       <View style={styles.textContainer}>
         <Text style={styles.label}>{label}</Text>
         {isLongText && !expanded ? (
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'bold',
-    color: '#3b5998',
+    color: "#4A90E2",
     marginBottom: 5,
   },
   value: {
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   },
   postulerButton: {
     margin: 20,
-    borderRadius: 25,
+    borderRadius: 5,
     overflow: 'hidden',
   },
   gradient: {

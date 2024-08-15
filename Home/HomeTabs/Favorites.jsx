@@ -160,7 +160,7 @@ const Favorites = () => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#4A90E2" />
       </View>
     );
   }
@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   button: {
-    backgroundColor: '#192f6a',
+    backgroundColor: "#4A90E2",
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,

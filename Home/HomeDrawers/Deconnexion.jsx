@@ -48,7 +48,7 @@ const LogoutBottomSheet = forwardRef((props, ref) => {
           </TouchableOpacity>
           <TouchableOpacity onPress={handleLogout} style={[styles.button, styles.logoutButton]}>
             {isLoading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color="#4A90E2"/>
             ) : (
               <Text style={[styles.buttonText, styles.logoutButtonText]}>Déconnecter</Text>
             )}

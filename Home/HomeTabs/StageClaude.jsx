@@ -4,8 +4,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { useTheme } from   '../../Services/ThemeContext';  
 
 const Stages = () => {
+  const { globalStyles } = useTheme();
+  
   const [stages, setStages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -32,7 +35,8 @@ const Stages = () => {
       if (!token) {
         throw new Error('No authentication token found');
       }
-  
+          
+
       const response = await axios.get(`${process.env.BACKEND_URL}/etudiant/All`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -45,6 +49,7 @@ const Stages = () => {
         }
       });
         //   console.log(response.data.stages)   
+     /*    console.log('response',response.data)     */
 
       setStages(response.data.stages);
       setPagination({
@@ -53,7 +58,7 @@ const Stages = () => {
         totalItems: response.data.pagination.totalItems,
       });
   
-      setSearchError(response.data.stages.length === 0);
+      setSearchError(!response.data.stages || response.data.stages.length === 0);
   
     } catch (error) {
       console.error('Error fetching stages:', error);
@@ -126,12 +131,12 @@ const Stages = () => {
   const renderStageItem = ({ item }) => (
     <View style={styles.card}>
       <Text style={styles.jobTitle}>{item.Nom} - {item.Domaine}</Text>
-      <Text style={styles.companyLocation}>{item.Address}</Text>
-      <Text style={styles.postedDate}>Il y a {getTimeSinceCreated(new Date(item.createdAt))}</Text>
+      <Text style={styles.companyLocation}> <Icon name='map-marker' size={15} ></Icon> {item.Address} </Text>
+      <Text style={styles.postedDate}> <Icon name='clock-o'></Icon>  {getTimeSinceCreated(new Date(item.createdAt))}</Text>
       <View style={styles.hrLine} />
   
       <View style={styles.infoGrid}>
-        <InfoItem label="Postes vacants:" value="1 poste ouvert" />
+        <InfoItem label="Postes vacants:" value={item.PostesVacants} />
         <InfoItem label="Type d'emploi désiré :" value={`${item.Libelle}`} />
         <InfoItem label="Experience :" value={item.Experience} />
         <InfoItem label="Niveau d'étude :" value={item.Niveau} />
@@ -191,7 +196,7 @@ const Stages = () => {
       {loading && !refreshing ? (
         <ActivityIndicator size="large" color="#007bff" />
       ) : (
-        stages.length === 0 ? (
+        !stages ? (
           searchError ? renderEmptySearch() : null
         ) : (
           <FlatList
@@ -246,7 +251,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 8,
+    borderRadius: 10,
     marginBottom: 16,
     padding: 16,
     elevation: 2,
@@ -361,12 +366,14 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   postedDate: {
+    alignSelf: 'flex-end',
     fontSize: 14,
     color: '#999',
     marginBottom: 16,
   },
   infoGrid: {
-    backgroundColor: '#F5F5F5',
+  /*   backgroundColor: '#F5F5F5', */
+    backgroundColor:'#ccc',
     padding: 12,
     borderRadius: 8,
     marginBottom: 16,

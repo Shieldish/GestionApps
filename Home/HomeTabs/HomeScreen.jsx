@@ -50,7 +50,7 @@ const App = () => {
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {loading ? (
           <View style={styles.loaderContainer}>
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color="#4A90E2" />
           </View>
         ) : error ? (
           <View style={styles.errorContainer}>

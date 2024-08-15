@@ -101,7 +101,7 @@ const MoreDetails = ({ route }) => {
     >
        
             <LinearGradient
-                colors={['#4c669f', '#3b5998', '#192f6a']}
+                colors={["#4A90E2", "#4A90E2", '#192f6a']}
                 style={styles.gradientBackground}
             >
                 <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
@@ -228,7 +228,7 @@ const DocumentLink = ({ label, url }) => {
       if (supported) {
         await Linking.openURL(url);
       } else {
-        Alert.alert("Error", "Cannot open this document");
+        Alert.alert("Error", "Cannot open this document :"+url);
       }
     };
   

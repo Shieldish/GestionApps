@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Animated ,Image} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Animated, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Icons from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import { BACKEND_URL } from '@env';
 
@@ -38,16 +39,16 @@ const Register = () => {
 
   const handleRegister = async () => {
     if (!name || !username || !email || !password || !repeatPassword) {
-      setErrorMessage('Please fill in all fields.');
+      setErrorMessage('Veuillez remplir tous les champs.');
       return;
     }
 
     if (password !== repeatPassword) {
-      setErrorMessage('Passwords do not match.');
+      setErrorMessage('Les mots de passe ne correspondent pas.');
       return;
     }
     if (password.length < 8 || repeatPassword.length < 8) {
-      setErrorMessage('Passwords must be at least 8 characters.');
+      setErrorMessage('Les mots de passe doivent contenir au moins 8 caractères.');
       return;
     }
 
@@ -75,10 +76,10 @@ const Register = () => {
         // Navigate to a success message screen or login screen
         navigation.navigate('RegistrationSuccessMessages', { nom: name, email: email });
       } else {
-        setErrorMessage(data.message || 'Registration failed.');
+        setErrorMessage(data.message || "L'inscription a échoué.");
       }
     } catch (error) {
-      setErrorMessage('An error occurred during registration.');
+      setErrorMessage('Une erreur est survenue lors de l\'inscription.');
       console.error('Registration error:', error);
     } finally {
       setLoading(false); // Hide loading spinner
@@ -89,12 +90,14 @@ const Register = () => {
     <View style={styles.container}>
       <Animated.View style={[styles.contentWrapper, { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }]}>
 
-      <Image
+        {/* <Image
           source={require('../assets/favicon.png')} // Change this to the path of your image
           style={styles.headerImage}
           resizeMode="contain"
-        />
-        <Text style={styles.title}>REGISTER</Text>
+        /> */}
+        <Text style={styles.ICONS}> <Icons name="user-graduate" size={160} color="#4A90E2" /></Text>
+
+        <Text style={styles.title}>Inscription</Text>
 
         {errorMessage ? (
           <View style={styles.errorCard}>
@@ -106,7 +109,7 @@ const Register = () => {
           <Icon name="user" size={20} color="gray" style={styles.inputIcon} />
           <TextInput
             style={styles.input}
-            placeholder="Name"
+            placeholder="Nom"
             value={name}
             onChangeText={setName}
           />
@@ -116,7 +119,7 @@ const Register = () => {
           <Icon name="user" size={20} color="gray" style={styles.inputIcon} />
           <TextInput
             style={styles.input}
-            placeholder="Username"
+            placeholder="Prénom"
             value={username}
             onChangeText={setUsername}
           />
@@ -137,7 +140,7 @@ const Register = () => {
           <Icon name="lock" size={20} color="gray" style={styles.inputIcon} />
           <TextInput
             style={styles.input}
-            placeholder="Password"
+            placeholder="Mot de passe"
             secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
@@ -154,7 +157,7 @@ const Register = () => {
           <Icon name="lock" size={20} color="gray" style={styles.inputIcon} />
           <TextInput
             style={styles.input}
-            placeholder="Repeat Password"
+            placeholder="Répéter le mot de passe"
             secureTextEntry={!showRepeatPassword}
             value={repeatPassword}
             onChangeText={setRepeatPassword}
@@ -171,14 +174,14 @@ const Register = () => {
           {loading ? (
             <ActivityIndicator size="small" color="white" />
           ) : (
-            <Text style={styles.buttonText}>Register</Text>
+            <Text style={styles.buttonText}>S'inscrire</Text>
           )}
         </TouchableOpacity>
 
         <View style={styles.switchContainer}>
-          <Text>Already have an account? </Text>
+          <Text>Vous avez déjà un compte? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.switchText}>Login</Text>
+            <Text style={styles.switchText}>Connexion</Text>
           </TouchableOpacity>
         </View>
       </Animated.View>
@@ -189,69 +192,63 @@ const Register = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    padding: 20,
   },
   contentWrapper: {
-    width: '80%',
-    padding: 20,
-    backgroundColor: 'white',
-   /*  borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 5 },
-    shadowRadius: 10,
-    borderWidth:1,
-    borderColor: 'grey',
-    elevation: 5, */
+    width: '90%',
   },
-  headerImage: {
-    width: '100%',
-    height: 150,
+  ICONS: {
+    textAlign: 'center',
     marginBottom: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 20,
-    color: '#007bff',
+    color: '#4A90E2',
+  },
+  errorCard: {
+    backgroundColor: '#f8d7da',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  errorMessage: {
+    color: '#721c24',
     textAlign: 'center',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
-    position: 'relative',
-    borderColor: '#ddd',
-    borderWidth: 1,
+    backgroundColor: '#f5f5f5',
     borderRadius: 5,
-    paddingLeft: 10,
-    backgroundColor: '#f9f9f9',
+    marginBottom: 15,
+    paddingHorizontal: 10,
   },
   inputIcon: {
     marginRight: 10,
   },
   input: {
     flex: 1,
-    height: 50,
-    paddingRight: 40, // Add padding to prevent text overlap with the icon
+    height: 40,
+    fontSize: 16,
   },
   passwordToggleIcon: {
-    position: 'absolute',
-    right: 10,
-    top: 15,
+    padding: 5,
   },
   button: {
-    backgroundColor: '#007bff',
-    paddingVertical: 15,
+    backgroundColor: '#4A90E2',
+    padding: 10,
     borderRadius: 5,
     alignItems: 'center',
-    marginTop: 20,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 18,
+    color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
   },
   switchContainer: {
@@ -260,27 +257,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   switchText: {
-    color: '#007bff',
-    marginLeft: 5,
-  },
-  errorCard: {
-    padding: 15,
-    backgroundColor: '#ffcccc',
-    borderRadius: 5,
-    marginBottom: 15,
-    alignItems: 'center',
-    borderColor: '#ff6666',
-    borderWidth: 1,
-    shadowColor: '#ff0000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  errorMessage: {
-    color: '#b30000',
-    fontSize: 16,
-    textAlign: 'center',
+    color: '#4A90E2',
+    textDecorationLine: 'underline',
   },
 });
 

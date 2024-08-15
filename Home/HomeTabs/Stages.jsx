@@ -4,11 +4,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { useTheme } from   '../../Services/ThemeContext';  
 
 const Stages = () => {
-  const { globalStyles } = useTheme();
-  
   const [stages, setStages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -31,11 +28,11 @@ const Stages = () => {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem('userToken');
-  
+
       if (!token) {
-        throw new Error('No authentication token found');
+        throw new Error('Aucun jeton d\'authentification trouvé');
       }
-  
+
       const response = await axios.get(`${process.env.BACKEND_URL}/etudiant/All`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -47,7 +44,6 @@ const Stages = () => {
           ...filters,
         }
       });
-        //   console.log(response.data.stages)   
 
       setStages(response.data.stages);
       setPagination({
@@ -55,29 +51,29 @@ const Stages = () => {
         totalPages: response.data.pagination.totalPages,
         totalItems: response.data.pagination.totalItems,
       });
-  
+
       setSearchError(!response.data.stages || response.data.stages.length === 0);
-  
+
     } catch (error) {
-      console.error('Error fetching stages:', error);
-      let errorMessage = 'An error occurred while fetching the stages.';
-  
+      console.error('Erreur lors de la récupération des stages:', error);
+      let errorMessage = 'Une erreur s\'est produite lors de la récupération des stages.';
+
       if (error.response) {
         if (error.response.status === 401) {
-          errorMessage = 'Authentication failed. Please log in again.';
+          errorMessage = 'Échec de l\'authentification. Veuillez vous reconnecter.';
         } else {
-          errorMessage = `HTTP error! status: ${error.response.status}`;
+          errorMessage = `Erreur HTTP ! statut : ${error.response.status}`;
         }
       } else if (error.request) {
-        errorMessage = 'No response from the server. Please check your internet connection.';
+        errorMessage = 'Aucune réponse du serveur. Veuillez vérifier votre connexion Internet.';
       }
-  
+
       Alert.alert(
-        'Error Fetching Data',
+        'Erreur de récupération des données',
         errorMessage,
         [
-          { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-          { text: 'Retry', onPress: fetchStages },
+          { text: 'Annuler', onPress: () => console.log('Annuler pressé'), style: 'cancel' },
+          { text: 'Réessayer', onPress: fetchStages },
         ]
       );
     } finally {
@@ -105,7 +101,6 @@ const Stages = () => {
     }
   };
 
-  
   const getTimeSinceCreated = (createdAt) => {
     const now = new Date();
     const diffMs = now.getTime() - createdAt.getTime();
@@ -113,7 +108,7 @@ const Stages = () => {
     const diffMinutes = Math.floor(diffSeconds / 60);
     const diffHours = Math.floor(diffMinutes / 60);
     const diffDays = Math.floor(diffHours / 24);
-  
+
     if (diffSeconds < 60) {
       return `il y a ${diffSeconds} secondes`;
     } else if (diffMinutes < 60) {
@@ -125,18 +120,17 @@ const Stages = () => {
     }
   };
 
-
   const renderStageItem = ({ item }) => (
     <View style={styles.card}>
       <Text style={styles.jobTitle}>{item.Nom} - {item.Domaine}</Text>
-      <Text style={styles.companyLocation}> <Icon name='map-marker' size={15} ></Icon> {item.Address} </Text>
-      <Text style={styles.postedDate}> <Icon name='clock-o'></Icon>  {getTimeSinceCreated(new Date(item.createdAt))}</Text>
+      <Text style={styles.companyLocation}> <Icon name='map-marker' size={15} /> {item.Address} </Text>
+      <Text style={styles.postedDate}> <Icon name='clock-o' /> {getTimeSinceCreated(new Date(item.createdAt))}</Text>
       <View style={styles.hrLine} />
-  
+
       <View style={styles.infoGrid}>
-        <InfoItem label="Postes vacants:" value="1 poste ouvert" />
+        <InfoItem label="Postes vacants:" value={item.PostesVacants} />
         <InfoItem label="Type d'emploi désiré :" value={`${item.Libelle}`} />
-        <InfoItem label="Experience :" value={item.Experience} />
+        <InfoItem label="Expérience :" value={item.Experience} />
         <InfoItem label="Niveau d'étude :" value={item.Niveau} />
         <InfoItem label="Langue :" value={item.Langue} />
         <InfoItem label="Genre :" value="Indifférent" />
@@ -147,7 +141,7 @@ const Stages = () => {
         <Text style={styles.sectionTitle}>Description de l'emploi</Text>
         <Text style={styles.descriptionText}>{item.Description}</Text>
       </View>
-  
+
       <TouchableOpacity
         style={styles.postulateButton}
         onPress={() => navigation.navigate('Postulation', { stage: item })}
@@ -156,7 +150,7 @@ const Stages = () => {
       </TouchableOpacity>
     </View>
   );
-  
+
   const InfoItem = ({ label, value }) => (
     <View style={styles.infoItem}>
       <Text style={styles.infoLabel}>{label}</Text>
@@ -178,7 +172,7 @@ const Stages = () => {
 
   const renderEmptySearch = () => (
     <View style={styles.emptySearchContainer}>
-      <Text style={styles.emptySearchText}>{`"${search}" not found`}</Text>
+      <Text style={styles.emptySearchText}>{`Aucun résultat trouvé pour "${search}"`}</Text>
     </View>
   );
 
@@ -192,9 +186,9 @@ const Stages = () => {
       />
 
       {loading && !refreshing ? (
-        <ActivityIndicator size="large" color="#007bff" />
+        <ActivityIndicator size="large" color="#4A90E2" />
       ) : (
-        !stages ? (
+        stages.length === 0 ? (
           searchError ? renderEmptySearch() : null
         ) : (
           <FlatList
@@ -206,7 +200,7 @@ const Stages = () => {
             refreshing={refreshing}
             onRefresh={handleRefresh}
             contentContainerStyle={{ paddingBottom: 20 }}
-            showsVerticalScrollIndicator={false} // Add this line
+            showsVerticalScrollIndicator={false}
           />
         )
       )}
@@ -289,7 +283,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   postulateButton: {
-    backgroundColor: '#192f6a',
+    backgroundColor: "#4A90E2",
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 6,
@@ -331,13 +325,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+
     marginTop: 20,
+    
   },
   paginationButton: {
-    backgroundColor: 'grey',
+    backgroundColor:"#4A90E2",
     paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
+    paddingVertical: 6,
+    borderRadius: 800,
     marginHorizontal: 8,
     marginBottom:10,
   },
@@ -349,18 +345,22 @@ const styles = StyleSheet.create({
   paginationText: {
     fontSize: 16,
     fontWeight: 'bold',
+    color:"#4A90E2",
+    
+
   },
 
   jobTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-   
-    color: '#333',
+    textAlign:'center',
+    color:"#4A90E2",
     marginBottom: 4,
   },
   companyLocation: {
+    textAlign:'center',
     fontSize: 16,
-    color: '#666',
+    color: "#4A90E2",
     marginBottom: 2,
   },
   postedDate: {

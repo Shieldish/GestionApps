@@ -143,7 +143,7 @@ const ProfileEditScreen = () => {
   return (
     <LinearGradient
       /* colors={['#4c669f', '#3b5998', '#192f6a']} */
-      colors={['#4c669f', '#007bff', '#192f6a']}
+      colors={["black","silver", "black"]}
       style={styles.gradientBackground}
     >
       <ScrollView style={styles.container}>
@@ -313,7 +313,7 @@ const ProfileEditScreen = () => {
 
           {/* Submit Button */}
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>Update Profile</Text>
+            <Text style={styles.submitButtonText}>mettre à jours</Text>
           </TouchableOpacity>
         </Animated.View>
       </ScrollView>
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   submitButton: {
-    backgroundColor: '#4ecdc4',
+    backgroundColor: "#4A90E2",
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',

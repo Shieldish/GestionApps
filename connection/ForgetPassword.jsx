@@ -3,16 +3,20 @@ import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet, ActivityInd
 import { useNavigation } from '@react-navigation/native';
 import { BACKEND_URL } from '@env';
 
-const ForgotPasswordModal = ({ visible, onClose }) => {
+
+
+const ForgotPasswordModal = ({ visible, onClose = () => {} }) => {
   const navigation = useNavigation();
   const [resetEmail, setResetEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+
   useEffect(() => {
     if (!visible) {
-      // Reset form state when modal is closed
       setResetEmail('');
       setMessage('');
       setIsError(false);
@@ -21,7 +25,7 @@ const ForgotPasswordModal = ({ visible, onClose }) => {
 
   const handleResetPassword = async () => {
     if (!resetEmail) {
-      setMessage('Please enter your email address');
+      setMessage('Veuillez entrer votre adresse e-mail');
       setIsError(true);
       return;
     }
@@ -42,15 +46,15 @@ const ForgotPasswordModal = ({ visible, onClose }) => {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage(`${data.message} ${resetEmail}`);
+        setMessage(`Un lien de réinitialisation a été envoyé à ${resetEmail}`);
         setIsError(false);
       } else {
-        setMessage(data.error || 'An error occurred. Please try again.');
+        setMessage(data.error || 'Une erreur est survenue. Veuillez réessayer.');
         setIsError(true);
       }
     } catch (error) {
-      console.error('Error:', error);
-      setMessage('An error occurred. Please try again later.');
+      console.error('Erreur:', error);
+      setMessage('Une erreur est survenue. Veuillez réessayer plus tard.');
       setIsError(true);
     } finally {
       setIsLoading(false);
@@ -58,7 +62,9 @@ const ForgotPasswordModal = ({ visible, onClose }) => {
   };
 
   const handleCloseModal = () => {
-    
+    if (typeof onClose === 'function') {
+      onClose();
+    }
   };
 
   return (
@@ -70,16 +76,16 @@ const ForgotPasswordModal = ({ visible, onClose }) => {
     >
       <View style={styles.modalBackground}>
         <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Forgot Password</Text>
-          <TouchableOpacity onPress={handleCloseModal} style={styles.closeButton}>
-  
+          <Text style={styles.modalTitle}>Mot de passe oublié</Text>
+          <TouchableOpacity  onPress={() => navigation.navigate('Login')} style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>X</Text>
           </TouchableOpacity>
 
           <View style={styles.modalBody}>
-            <Text style={styles.label}>Please enter your email address to reset password</Text>
+            <Text style={styles.label}>Veuillez entrer votre adresse e-mail pour réinitialiser votre mot de passe</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter your email address"
+              placeholder="Entrez votre adresse e-mail"
               value={resetEmail}
               onChangeText={(text) => {
                 setResetEmail(text);
@@ -98,22 +104,22 @@ const ForgotPasswordModal = ({ visible, onClose }) => {
 
             <View style={styles.buttonGroup}>
               <TouchableOpacity
-              onPress={() => navigation.navigate('Login')}
+                onPress={() => navigation.navigate('Login')}
                 style={[styles.button, styles.secondaryButton]}
-                accessibilityLabel="Close modal"
+                accessibilityLabel="Aller à la connexion"
               >
-                <Text style={styles.buttonText}>Login</Text>
+                <Text style={styles.buttonText}>Connexion</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleResetPassword}
                 style={[styles.button, styles.primaryButton]}
-                accessibilityLabel="Reset password"
+                accessibilityLabel="Réinitialiser le mot de passe"
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.buttonText}>Reset</Text>
+                  <Text style={styles.buttonText}>Réinitialiser</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -122,94 +128,90 @@ const ForgotPasswordModal = ({ visible, onClose }) => {
       </View>
     </Modal>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  // ... (keep the existing styles)
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContainer: {
+    width: '80%',
     backgroundColor: 'white',
     borderRadius: 10,
     padding: 20,
-    width: '80%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    alignItems: 'center',
   },
   modalTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#007bff',
     marginBottom: 10,
-    textAlign: 'center',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    padding: 5,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   modalBody: {
-    marginTop: 20,
-    marginBottom: 10,
+    width: '100%',
+    alignItems: 'center',
   },
   label: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 10,
     textAlign: 'center',
   },
   input: {
+    width: '100%',
     height: 40,
-    borderColor: '#ddd',
+    borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
-    paddingLeft: 10,
+    paddingHorizontal: 10,
     marginBottom: 10,
-  },
-  buttonGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  button: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minWidth: 100,
-  },
-  secondaryButton: {
-    backgroundColor: '#666',
-  },
-  primaryButton: {
-    backgroundColor: '#007bff',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  successText: {
-    color: 'green',
-    textAlign: 'center',
-    marginTop: 10,
-  },
-  errorText: {
-    color: 'red',
-    textAlign: 'center',
-    marginTop: 10,
   },
   message: {
-    marginTop: 10,
+    fontSize: 14,
     marginBottom: 10,
     textAlign: 'center',
+  },
+  successMessage: {
+    color: 'green',
   },
   errorMessage: {
     color: 'red',
   },
-  successMessage: {
-    color: 'green',
+  buttonGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  button: {
+    flex: 1,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  primaryButton: {
+    backgroundColor: '#4A90E2',
+  },
+  secondaryButton: {
+    backgroundColor: 'gray',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 

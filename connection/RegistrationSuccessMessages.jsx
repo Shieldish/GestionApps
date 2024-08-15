@@ -14,7 +14,7 @@ const RegistrationSuccessMessages = () => {
 
   const handleResend = async () => {
     setIsResending(true);
-    setFlashMessage(''); // Clear previous flash messages
+    setFlashMessage(''); // Efface les messages précédents
 
     try {
       const response = await fetch(`${BACKEND_URL}/connection/resendmail`, {
@@ -35,8 +35,8 @@ const RegistrationSuccessMessages = () => {
         setFlashMessageType('error');
       }
     } catch (error) {
-      console.error('Failed to resend email:', error);
-      setFlashMessage('An error occurred while resending the email. Please try again later.');
+      console.error('Échec de l\'envoi de l\'email :', error);
+      setFlashMessage('Une erreur est survenue lors de l\'envoi de l\'email. Veuillez réessayer plus tard.');
       setFlashMessageType('error');
     } finally {
       setIsResending(false);
@@ -46,14 +46,14 @@ const RegistrationSuccessMessages = () => {
   return (
     <View style={styles.container}>
       <View style={styles.contentWrapper}>
-        <Text style={styles.title}>Email Validation</Text>
-        <Text style={styles.paragraph}>Thank you <Text style={styles.strong}>{nom}</Text> for signing up.</Text>
+        <Text style={styles.title}>Validation de l'Email</Text>
+        <Text style={styles.paragraph}>Merci <Text style={styles.strong}>{nom}</Text> pour votre inscription.</Text>
         <Text style={styles.paragraph}>
-          An email with a validation link was sent to your email <Text style={styles.email}>{email}</Text>.
-          Please open your email inbox and click on the validation link to proceed with signing up.
+          Un email contenant un lien de validation a été envoyé à <Text style={styles.email}>{email}</Text>.
+          Veuillez ouvrir votre boîte de réception et cliquer sur le lien de validation pour continuer votre inscription.
         </Text>
         <Text style={styles.paragraph}>
-          If you have not received an email, please check your spam folder, or click the "Resend Validation Link Email" button below to have it sent again.
+          Si vous n'avez pas reçu d'email, veuillez vérifier votre dossier de spam, ou cliquer sur le bouton "Renvoyer l'email de validation" ci-dessous pour le recevoir à nouveau.
         </Text>
 
         {flashMessage ? (
@@ -64,7 +64,7 @@ const RegistrationSuccessMessages = () => {
 
         <View style={styles.buttonWrapper}>
           <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>Connexion</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -72,7 +72,7 @@ const RegistrationSuccessMessages = () => {
             onPress={handleResend}
             disabled={isResending}
           >
-            <Text style={styles.buttonText}>{isResending ? 'Resending...' : 'Resend Validation Link Email'}</Text>
+            <Text style={styles.buttonText}>{isResending ? 'Renvoi en cours...' : 'Renvoyer l\'email de validation'}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -112,11 +112,11 @@ const styles = StyleSheet.create({
   },
   strong: {
     fontWeight: 'bold',
-    color: 'black',
+    color: 'green',
   },
   email: {
     fontWeight: 'bold',
-    color: 'black',
+    color: 'green',
   },
   buttonWrapper: {
     flexDirection: 'row',
@@ -130,11 +130,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logoutButton: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#4A90E2',
     color: '#333',
   },
   resendButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#F5A623',
     color: 'white',
   },
   buttonText: {

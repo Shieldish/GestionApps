@@ -63,7 +63,7 @@ const JobCard = React.memo(({ job, onToggleFavorite }) => {
       <Text style={styles.cardInfo3}>Publié le : {new Date(job.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</Text>
       <Divider />
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Postulation', { stage: job })}>
-        <Text style={styles.buttonText}>View More Details</Text>
+        <Text style={styles.buttonText}>Voire plus de Detailes</Text>
       </TouchableOpacity>
     </View>
   );
@@ -147,7 +147,7 @@ const JobListings = ({ data }) => {
       <View style={styles.accordion}>
         <TouchableOpacity style={styles.header} onPress={toggleAccordion}>
           <Text style={styles.headerText}>triés par</Text>
-          <Ionicons name={expanded ? 'chevron-up-outline' : 'chevron-down-outline'} size={24} color="#192f6a" />
+          <Ionicons name={expanded ? 'chevron-up-outline' : 'chevron-down-outline'} size={24} color="#4A90E2" />
         </TouchableOpacity>
         <Animated.View style={[styles.body, { height: bodyHeight }]}>
           <TouchableOpacity
@@ -157,7 +157,7 @@ const JobListings = ({ data }) => {
               toggleAccordion();
             }}
           >
-            <Ionicons name="time-outline" size={24} color={sortOrder === 'newest' ? '#192f6a' : '#7f8c8d'} />
+            <Ionicons name="time-outline" size={24} color={sortOrder === 'newest' ? "#4A90E2" : '#7f8c8d'} />
             <Text style={[styles.filterText, sortOrder === 'newest' && styles.activeFilterText]}>Les plus Recents</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -167,7 +167,7 @@ const JobListings = ({ data }) => {
               toggleAccordion();
             }}
           >
-            <Ionicons name="calendar-outline" size={24} color={sortOrder === 'oldest' ? '#192f6a' : '#7f8c8d'} />
+            <Ionicons name="calendar-outline" size={24} color={sortOrder === 'oldest' ? "#4A90E2" : '#7f8c8d'} />
             <Text style={[styles.filterText, sortOrder === 'oldest' && styles.activeFilterText]}>Les plus anciens</Text>
           </TouchableOpacity>
         </Animated.View>
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginHorizontal: 10,
     marginVertical: 10,
-    width: 300,
+    width: 280,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     color: '#2c3e50',
   },
   button: {
-    backgroundColor: '#192f6a',
+    backgroundColor: "#4A90E2",
     padding: 14,
     borderRadius: 8,
     marginTop: 20,
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     color: '#7f8c8d',
   },
   activeFilterText: {
-    color: '#192f6a',
+    color:"#4A90E2",
     fontWeight: 'bold',
   },
   accordion: {
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#192f6a',
+    color:"#4A90E2",
   },
   body: {
     overflow: 'hidden',

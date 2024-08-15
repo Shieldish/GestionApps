@@ -399,6 +399,7 @@ const styles = StyleSheet.create({
   },
   companyLocation: {
     fontSize: 16,
+    alignSelf:'center',
     color: '#666',
     marginBottom: 2,
   },

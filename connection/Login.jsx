@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Animated, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Icons from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BACKEND_URL } from '@env';
 import { useAuth } from '../App';
-
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,22 +13,25 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isChecked, setIsChecked] = useState(false);
   const { setIsLoggedIn, setUserToken, setHasSeenOnboarding } = useAuth();
+  
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const navigation = useNavigation();
 
-  // Animation references
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const translateYAnim = useRef(new Animated.Value(30)).current;
 
+  const toggleCheckbox = () => {
+    setIsChecked(!isChecked);
+  };
+
   useEffect(() => {
-    // Clear error message whenever email or password changes
     setErrorMessage('');
   }, [email, password]);
 
   useEffect(() => {
-    // Run animations when the component mounts
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -48,11 +51,12 @@ const Login = () => {
     setErrorMessage('');
 
     if (!email || !password) {
-      setErrorMessage('Please fill in all fields.');
+      setErrorMessage('Veuillez remplir tous les champs.');
+      setIsLoading(false);
       return;
     }
 
-    setIsLoading(true); // Start loading indicator
+    setIsLoading(true);
 
     try {
       const response = await fetch(`${BACKEND_URL}/connection/loging`, {
@@ -67,12 +71,11 @@ const Login = () => {
         credentials: 'include',
       });
 
-      const data = await response.json(); // Parse response JSON
+      const data = await response.json();
       console.log(data)
 
       if (response.ok) {
-        // Handle successful login
-        console.log('Login successful:', data);
+        console.log('Connexion réussie:', data);
         await AsyncStorage.setItem('userToken', data.token);
         await AsyncStorage.setItem('userData', JSON.stringify(data.userData));
 
@@ -95,11 +98,11 @@ const Login = () => {
           });
         }
       } else {
-        setErrorMessage(data.message || 'Login failed');
+        setErrorMessage(data.message || 'Échec de la connexion');
       }
     } catch (error) {
-      console.error('Login error:', error);
-      setErrorMessage('An error occurred while logging in.');
+      console.error('Erreur de connexion:', error);
+      setErrorMessage('Une erreur est survenue lors de la connexion.');
     } finally {
       setIsLoading(false);
     }
@@ -108,12 +111,8 @@ const Login = () => {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.contentWrapper, { opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }]}>
-        <Image
-          source={require('../assets/favicon.png')} // Change this to the path of your image
-          style={styles.headerImage}
-          resizeMode="contain"
-        />
-        <Text style={styles.title}>LOGIN</Text>
+        <Text style={styles.ICONS}> <Icons name="user-graduate" size={160} color="#4A90E2" /></Text>
+        <Text style={styles.title}>Connection</Text>
         
         {errorMessage ? (
           <View style={styles.errorCard}>
@@ -136,7 +135,7 @@ const Login = () => {
           <Icon name="lock" size={20} color="gray" style={styles.inputIcon} />
           <TextInput
             style={styles.input}
-            placeholder="Password"
+            placeholder="Mot de passe"
             secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
@@ -150,12 +149,12 @@ const Login = () => {
         </View>
         
         <View style={styles.checkboxContainer}>
-          <TouchableOpacity>
-            <Icon name="check-square" size={20} color="gray" />
-            <Text style={styles.checkboxText}> Remember me</Text>
+          <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
+            <Icon name={isChecked ? 'check-square' : 'square-o'} size={20} color='#4A90E2' />
+            <Text style={styles.checkboxText}> Se souvenir de moi</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword')}>
-            <Text style={styles.forgotPasswordText}>Forgot password?</Text>
+            <Text style={styles.forgotPasswordText}>Mot de passe oublié?</Text>
           </TouchableOpacity>
         </View>
         
@@ -163,14 +162,14 @@ const Login = () => {
           {isLoading ? (
             <ActivityIndicator size="small" color="white" />
           ) : (
-            <Text style={styles.buttonText}>Sign in</Text>
+            <Text style={styles.buttonText}>Se connecter</Text>
           )}
         </TouchableOpacity>
         
         <View style={styles.registerContainer}>
-          <Text>Not a member? </Text>
+          <Text>Pas encore membre? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Registration')}>
-            <Text style={styles.registerText}>Register</Text>
+            <Text style={styles.registerText}>S'inscrire</Text>
           </TouchableOpacity>
         </View>
       </Animated.View>
@@ -178,85 +177,85 @@ const Login = () => {
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    padding: 20,
   },
   contentWrapper: {
-    width: '80%',
-    padding: 20,
-    backgroundColor: 'white',
-/*     borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 5 },
-    shadowRadius: 10,
-    borderWidth:1,
-    borderColor: 'grey',
-    elevation: 5, */
+    width: '90%',
   },
-  headerImage: {
-    width: '100%',
-    height: 150,
+  ICONS: {
+    textAlign: 'center',
     marginBottom: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#007bff',
     textAlign: 'center',
-   
+    marginBottom: 20,
+    color: '#4A90E2',
+  },
+  errorCard: {
+    backgroundColor: '#f8d7da',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  errorMessage: {
+    color: '#721c24',
+    textAlign: 'center',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
-    position: 'relative',
-    borderColor: '#ddd',
-    borderWidth: 1,
+    backgroundColor: '#f5f5f5',
     borderRadius: 5,
-    paddingLeft: 10,
-    backgroundColor: '#f9f9f9',
+    marginBottom: 15,
+    paddingHorizontal: 10,
   },
   inputIcon: {
     marginRight: 10,
   },
   input: {
     flex: 1,
-    height: 50,
-    paddingRight: 40, // Add padding to prevent text overlap with the icon
+    height: 40,
+    fontSize: 16,
   },
   passwordToggleIcon: {
-    position: 'absolute',
-    right: 10,
-    top: 15,
+    padding: 5,
   },
   checkboxContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 20,
   },
+  checkbox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   checkboxText: {
-    fontSize: 16,
+    marginLeft: 5,
+    fontSize: 14,
+    color: '#4A90E2',
   },
   forgotPasswordText: {
-    fontSize: 16,
-    color: '#007bff',
+    color: '#4A90E2',
+    textDecorationLine: 'underline',
   },
   button: {
-    backgroundColor: '#007bff',
-    paddingVertical: 15,
+    backgroundColor: '#4A90E2',
+    padding: 10,
     borderRadius: 5,
     alignItems: 'center',
   },
   buttonText: {
-    color: 'white',
-    fontSize: 18,
+    color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
   },
   registerContainer: {
@@ -265,27 +264,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   registerText: {
-    color: '#007bff',
-    marginLeft: 5,
-  },
-  errorCard: {
-    padding: 15,
-    backgroundColor: '#ffcccc',
-    borderRadius: 5,
-    marginBottom: 15,
-    alignItems: 'center',
-    borderColor: '#ff6666',
-    borderWidth: 1,
-    shadowColor: '#ff0000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  errorMessage: {
-    color: '#b30000',
-    fontSize: 16,
-    textAlign: 'center',
+    color: '#4A90E2',
+    textDecorationLine: 'underline',
   },
 });
 

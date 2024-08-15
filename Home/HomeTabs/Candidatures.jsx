@@ -122,7 +122,7 @@ const PostulantList = () => {
       >
         <View style={styles.cardBody}>
           <Text style={styles.cardTitle}>
-            <Icon name="work" size={18} color="blue" /> {item.stageDomaine} : {item.entrepriseName}
+            <Icon name="work" size={18} color="#4A90E2" /> {item.stageDomaine} : {item.entrepriseName}
           </Text>
           <View style={styles.hrLine} />
           <Text>
@@ -159,7 +159,7 @@ const PostulantList = () => {
               etudiantEmail: item.etudiantEmail
             })}
           >
-            <Text><Icon name="info" size={16} /> plus de details</Text>
+            <Text><Icon name="info" size={16} color={"#4A90E2"}  /> plus de details</Text>
           </TouchableOpacity>
         </View>
       </Animated.View>
@@ -264,11 +264,12 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 16,
+    color:"#4A90E2",
     fontWeight: 'bold',
     textAlign: 'center',
     textTransform: 'uppercase',
     marginBottom: 10,
-    color: 'navy',
+   
   }, 
    hrLine: {
     borderBottomColor: 'black',
